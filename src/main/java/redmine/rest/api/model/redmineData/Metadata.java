@@ -1,12 +1,8 @@
 package redmine.rest.api.model.redmineData;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public abstract class Metadata {
 
     private int total_count;

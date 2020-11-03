@@ -1,14 +1,10 @@
 package redmine.rest.api.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class TimeEntry {
 
     private Long id;

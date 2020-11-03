@@ -35,7 +35,7 @@
                                 <th>Updated on</th>
                             </tr>
                             </thead>
-                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmineData.TimeEntityData"*/-->
+                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmineData.TimeEntryData"*/-->
                             <tr th:each="entry : ${timeEntries.getTime_entries()}">
                                 <!--/*@thymesVar id="entry" type="redmine.rest.api.model.TimeEntry"*/-->
                                 <td th:text="${entry.project.name}">Project name</td>
@@ -45,7 +45,6 @@
                                 <td th:text="${entry.comments}">Comment</td>
                                 <td th:text="${entry.spent_on}">Spent on</td>
                                 <td th:text="${entry.updated_on}">Updated on</td>
-                            </tr>
                             </tr>
                         </table>
                     </div>

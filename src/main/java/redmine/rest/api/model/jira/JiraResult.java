@@ -1,18 +1,9 @@
 package redmine.rest.api.model.jira;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import redmine.rest.api.model.redmineData.Metadata;
-
-import java.sql.Timestamp;
+import lombok.*;
 import java.util.Date;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Data
 public class JiraResult {
 
     private String self;
