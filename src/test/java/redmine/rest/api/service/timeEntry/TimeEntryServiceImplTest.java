@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraResult;
+import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 
@@ -29,8 +30,14 @@ class TimeEntryServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        postData = PostTimeEntryData.builder().user_id(7L).hours("2.5").
-                issue_id(3L).comments("stuff").build();
+        PostTimeEntry postTimeEntry = PostTimeEntry.builder()
+                .issue_id(3L)
+                .user_id(7L)
+                .hours(2)
+                .comments("hehe")
+                .activity_id(null)
+                .build();
+        postData = PostTimeEntryData.builder().time_entry(postTimeEntry).build();
         TimeEntry entry1 = TimeEntry.builder().id(1L).hours(2).build();
         TimeEntry entry2 = TimeEntry.builder().id(2L).hours(1).build();
         timeEntries = new HashSet<>();

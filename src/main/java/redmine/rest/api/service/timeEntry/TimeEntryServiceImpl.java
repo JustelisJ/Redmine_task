@@ -1,11 +1,15 @@
 package redmine.rest.api.service.timeEntry;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraResult;
+import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 import redmine.rest.api.service.activity.ActivityService;
@@ -45,19 +49,27 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     @Override
     public PostTimeEntryData postTimeEntry(JiraResult jiraResult) {
         System.out.println(jiraResult);
-        PostTimeEntryData timeEntry = new PostTimeEntryData(
-                issueService.getIssueFromName(jiraResult.getIssue().getKey()),//find issue-id by name
-                userService.findUserIdByName(jiraResult.getAuthor().getDisplayName()),//find user_id by name
-                secondsToHoursConverter(jiraResult.getTimeSpentSeconds()),  //converted to minutes, then to hours
-                jiraResult.getDescription(),
-                activityService.findActivityFromName(jiraResult.getDescription())//find activity_id by description
-        );
+        PostTimeEntry postTimeEntry = PostTimeEntry.builder()
+                .issue_id(issueService.getIssueFromName(jiraResult.getIssue().getKey()))
+                .user_id(userService.findUserIdByName(jiraResult.getAuthor().getDisplayName()))
+                .hours(secondsToHoursConverter(jiraResult.getTimeSpentSeconds()))
+                .comments(jiraResult.getDescription())
+                .activity_id(activityService.findActivityFromName(jiraResult.getDescription()))
+                .build();
+        PostTimeEntryData timeEntry = new PostTimeEntryData(postTimeEntry);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            System.out.println(objectMapper.writeValueAsString(timeEntry));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         return restTemplate.postForObject(url, timeEntry, PostTimeEntryData.class);
     }
 
-    private String secondsToHoursConverter(int seconds){
-        return String.valueOf(seconds / 60 / 60);
+    private double secondsToHoursConverter(int seconds){
+        return (double)seconds / 60 / 60;
     }
 
 }
