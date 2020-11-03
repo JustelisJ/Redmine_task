@@ -15,5 +15,6 @@ public class User {
     private String mail;
     private Date created_on;
     private Date last_login_on;
+    private String name;
 
 }
