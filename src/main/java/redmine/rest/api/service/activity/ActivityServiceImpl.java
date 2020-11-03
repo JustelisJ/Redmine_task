@@ -35,10 +35,14 @@ public class ActivityServiceImpl implements ActivityService {
             ActivityData activityData = getActivities();
             for (Activity activity:activityData.getTime_entry_activities()) {
                 activities.put(activity.getName(), activity.getId());
+                if(activity.is_default()){      //TODO: Why u no get is_default field???
+                    activities.put("default", activity.getId());
+                }
             }
             id = activities.get(name);
             if(id == null){
-                return null;
+                //return activities.get("default");
+                return 5L;
             } else {
                 return id;
             }
