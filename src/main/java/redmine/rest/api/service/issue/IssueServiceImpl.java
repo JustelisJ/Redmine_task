@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.Issue;
+import redmine.rest.api.model.User;
 import redmine.rest.api.model.redmineData.IssueData;
+import redmine.rest.api.model.redmineData.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,22 +32,20 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public Long getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
-        try{
-            return issues.get(name);
-        }
-        catch (Exception e){
-            IssueData data = getIssues();
-            for (Issue issue:data.getIssues()) {
+        Long id = issues.get(name);
+        if(id == null){
+            IssueData issueData = getIssues();
+            for (Issue issue:issueData.getIssues()) {
                 issues.put(issue.getSubject(), issue.getId());
             }
-
-            //try to return again, if the key does not exist, throw runTimeException
-            try{
-                return issues.get(name);
-            }
-            catch (Exception e1){
+            id = issues.get(name);
+            if(id == null){
                 throw new RuntimeException("No such issue exists");
+            } else {
+                return id;
             }
+        } else {
+            return id;
         }
     }
 }

@@ -1,10 +1,12 @@
 package redmine.rest.api.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@Builder
 public class TimeEntry {
 
     private Long id;

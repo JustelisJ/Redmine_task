@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import redmine.rest.api.model.Activity;
 import redmine.rest.api.model.User;
+import redmine.rest.api.model.redmineData.ActivityData;
 import redmine.rest.api.model.redmineData.UserData;
 
 import java.util.HashMap;
@@ -20,7 +22,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(RestTemplate restTemplate,
                            @Value("${redmine.url}") String url) {
         this.restTemplate = restTemplate;
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("logger", "asdasdasd"));
         this.url = url+"/users.json";
         users = new HashMap<>();
     }
@@ -32,20 +33,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long findUserIdByName(String name) {
-        try{
-            return users.get("name");
-        }
-        catch (Exception e){
-            UserData allUsers = getUsers();
-            for (User user:allUsers.getUsers()) {
-                users.put(user.getFistName()+" "+user.getLastName(), user.getId());
+        Long id = users.get(name);
+        if(id == null){
+            UserData userData = getUsers();
+            for (User user:userData.getUsers()) {
+                users.put(user.getFirstname()+" "+user.getLastname(), user.getId());
             }
-            try{
-                return users.get(name);
-            }
-            catch (Exception e1){
+            id = users.get(name);
+            if(id == null){
                 throw new RuntimeException("No such user exists");
+            } else {
+                return id;
             }
+        } else {
+            return id;
         }
     }
 }

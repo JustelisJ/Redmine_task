@@ -3,10 +3,8 @@ package redmine.rest.api.service.timeEntry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraResult;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
@@ -34,7 +32,6 @@ public class TimeEntryServiceImpl implements TimeEntryService {
         this.issueService = issueService;
         this.userService = userService;
         this.activityService = activityService;
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("logger", "asdasdasd"));
         this.url = url+"/time_entries.json";
         this.httpHeader = new HttpHeaders();
         httpHeader.setContentType(MediaType.APPLICATION_JSON);
@@ -46,17 +43,21 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
-    public TimeEntry postTimeEntry(JiraResult timeEntry) {
-        System.out.println(timeEntry);
-        PostTimeEntryData post = new PostTimeEntryData(
-                issueService.getIssueFromName(timeEntry.getIssue().getKey()),//find issue-id by name
-                userService.findUserIdByName(timeEntry.getAuthor().getDisplayName()),//find user_id by name
-                (double)timeEntry.getTimeSpentSeconds()/60/60,  //converted to minutes, then to hours
-                timeEntry.getDescription(),
-                activityService.findActivityFromName(timeEntry.getDescription())//find activity_id by description
+    public PostTimeEntryData postTimeEntry(JiraResult jiraResult) {
+        System.out.println(jiraResult);
+        PostTimeEntryData timeEntry = new PostTimeEntryData(
+                issueService.getIssueFromName(jiraResult.getIssue().getKey()),//find issue-id by name
+                userService.findUserIdByName(jiraResult.getAuthor().getDisplayName()),//find user_id by name
+                secondsToHoursConverter(jiraResult.getTimeSpentSeconds()),  //converted to minutes, then to hours
+                jiraResult.getDescription(),
+                activityService.findActivityFromName(jiraResult.getDescription())//find activity_id by description
         );
 
-        return restTemplate.postForObject(url, post, TimeEntry.class);
+        return restTemplate.postForObject(url, timeEntry, PostTimeEntryData.class);
+    }
+
+    private String secondsToHoursConverter(int seconds){
+        return String.valueOf(seconds / 60 / 60);
     }
 
 }

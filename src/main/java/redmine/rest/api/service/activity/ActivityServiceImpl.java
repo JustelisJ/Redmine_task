@@ -30,20 +30,20 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public Long findActivityFromName(String name) {
-        try{
-            return activities.get(name);
-        }
-        catch (Exception e){
+        Long id = activities.get(name);
+        if(id == null){
             ActivityData activityData = getActivities();
             for (Activity activity:activityData.getTime_entry_activities()) {
                 activities.put(activity.getName(), activity.getId());
             }
-            try {
-                return activities.get(name);
+            id = activities.get(name);
+            if(id == null){
+                return null;
+            } else {
+                return id;
             }
-            catch (Exception e1){
-                throw new RuntimeException("No such activity exists");
-            }
+        } else {
+            return id;
         }
     }
 }
