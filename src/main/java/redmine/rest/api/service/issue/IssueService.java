@@ -1,5 +1,6 @@
 package redmine.rest.api.service.issue;
 
+import redmine.rest.api.model.Issue;
 import redmine.rest.api.model.redmineData.IssueData;
 
 public interface IssueService {

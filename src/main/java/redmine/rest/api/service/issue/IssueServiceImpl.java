@@ -16,7 +16,8 @@ public class IssueServiceImpl implements IssueService {
     private final String url;
     private Map<String, Long> issues;
 
-    public IssueServiceImpl(RestTemplate restTemplate, @Value("${redmine.url}") String url) {
+    public IssueServiceImpl(RestTemplate restTemplate,
+                            @Value("${redmine.url}") String url) {
         this.restTemplate = restTemplate;
         this.url = url+"/issues.json";
         issues = new HashMap<>();
@@ -28,7 +29,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Long getIssueFromName(String name) {
+    public Long getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
         try{
             return issues.get(name);
         }

@@ -11,6 +11,7 @@ import redmine.rest.api.model.jira.JiraResult;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 import redmine.rest.api.service.issue.IssueService;
+import redmine.rest.api.service.user.UserService;
 
 @Service
 public class TimeEntryServiceImpl implements TimeEntryService {
@@ -20,13 +21,16 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     private final HttpHeaders httpHeader;
 
     private final IssueService issueService;
+    private final UserService userService;
 
     public TimeEntryServiceImpl(RestTemplate restTemplate,
                                 @Value("${redmine.url}") String url,
-                                IssueService issueService) {
+                                IssueService issueService,
+                                UserService userService) {
         this.restTemplate = restTemplate;
         this.issueService = issueService;
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("admin", "password"));
+        this.userService = userService;
+        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("logger", "asdasdasd"));
         this.url = url+"/time_entries.json";
         this.httpHeader = new HttpHeaders();
         httpHeader.setContentType(MediaType.APPLICATION_JSON);
@@ -41,9 +45,9 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     public TimeEntry postTimeEntry(JiraResult timeEntry) {
         PostTimeEntryData post = new PostTimeEntryData(
                 issueService.getIssueFromName(timeEntry.getIssue().getKey()),//find issue-id by name
-                1L,//find user_id by name
-                timeEntry.getTimeSpentSeconds()/60/60,  //converted to minutes, then to hours
-                "",//Comment needs to be added to JiraResult
+                userService.findUserIdByName(timeEntry.getAuthor().getDisplayName()),//find user_id by name
+                (double)timeEntry.getTimeSpentSeconds()/60/60,  //converted to minutes, then to hours
+                timeEntry.getDescription(),
                 1L//find activity_id by description
         );
 
