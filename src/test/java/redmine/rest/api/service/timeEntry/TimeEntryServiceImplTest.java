@@ -11,8 +11,8 @@ import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,7 +25,7 @@ class TimeEntryServiceImplTest {
 
     @Mock
     TimeEntryService entryService;
-    Set<TimeEntry> timeEntries;
+    List<TimeEntry> timeEntries;
     TimeEntryData data;
     PostTimeEntryData postData;
 
@@ -41,7 +41,7 @@ class TimeEntryServiceImplTest {
         postData = PostTimeEntryData.builder().time_entry(postTimeEntry).build();
         TimeEntry entry1 = TimeEntry.builder().id(1L).hours(2).build();
         TimeEntry entry2 = TimeEntry.builder().id(2L).hours(1).build();
-        timeEntries = new HashSet<>();
+        timeEntries = new ArrayList<>();
         timeEntries.add(entry1);
         timeEntries.add(entry2);
         data = TimeEntryData.builder().time_entries(timeEntries).build();

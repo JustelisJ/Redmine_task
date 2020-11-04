@@ -25,6 +25,14 @@
                     <div class="table-responsive">
                         <table class="table table-hover ">
                             <thead class="thead-inverse">
+                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmineData.TimeEntryData"*/-->
+                            <tr>
+                                <th class="col-md-6">Number of time entries:</th>
+                                <th class="col-md-6"
+                                    th:text="${timeEntries.getTime_entries().size()}+'/'+${timeEntries.getTotal_count()}">
+                                    number
+                                </th>
+                            </tr>
                             <tr>
                                 <th>Project</th>
                                 <th>User</th>

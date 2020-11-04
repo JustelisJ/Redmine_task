@@ -41,7 +41,7 @@ public class ActivityServiceImpl implements ActivityService {
                 }
             }
             id = activities.get(name);
-            if (Objects.nonNull(id)) {
+            if (Objects.isNull(id)) {
                 //return activities.get("default");
                 return 5L;
             } else {

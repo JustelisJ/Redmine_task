@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import redmine.rest.api.model.TimeEntry;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +14,6 @@ import java.util.Set;
 @Builder
 public class TimeEntryData extends Metadata {
 
-    private Set<TimeEntry> time_entries;
+    private List<TimeEntry> time_entries;
 
 }

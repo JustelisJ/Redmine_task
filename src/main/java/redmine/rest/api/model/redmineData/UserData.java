@@ -3,11 +3,11 @@ package redmine.rest.api.model.redmineData;
 import lombok.Data;
 import redmine.rest.api.model.User;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class UserData extends Metadata {
 
-    private Set<User> users;
+    private List<User> users;
 
 }
