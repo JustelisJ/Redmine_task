@@ -1,6 +1,7 @@
 package redmine.rest.api.model.jira;
 
-import lombok.*;
+import lombok.Data;
+
 import java.util.Date;
 
 @Data

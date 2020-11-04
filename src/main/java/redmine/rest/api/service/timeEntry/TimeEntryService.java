@@ -7,6 +7,7 @@ import redmine.rest.api.model.redmineData.TimeEntryData;
 public interface TimeEntryService {
 
     TimeEntryData getTimeEntries();
+
     PostTimeEntryData postTimeEntry(JiraResult timeEntry);
 
 }

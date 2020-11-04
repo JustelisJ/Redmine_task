@@ -1,12 +1,9 @@
 package redmine.rest.api.service.user;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.model.Activity;
 import redmine.rest.api.model.User;
-import redmine.rest.api.model.redmineData.ActivityData;
 import redmine.rest.api.model.redmineData.UserData;
 
 import java.util.HashMap;
@@ -15,14 +12,14 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private RestTemplate restTemplate;
     private final String url;
+    private RestTemplate restTemplate;
     private Map<String, Long> users;
 
     public UserServiceImpl(RestTemplate restTemplate,
                            @Value("${redmine.url}") String url) {
         this.restTemplate = restTemplate;
-        this.url = url+"/users.json";
+        this.url = url + "/users.json";
         users = new HashMap<>();
     }
 
@@ -34,13 +31,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long findUserIdByName(String name) {
         Long id = users.get(name);
-        if(id == null){
+        if (id == null) {
             UserData userData = getUsers();
-            for (User user:userData.getUsers()) {
-                users.put(user.getFirstname()+" "+user.getLastname(), user.getId());
+            for (User user : userData.getUsers()) {
+                users.put(user.getFirstname() + " " + user.getLastname(), user.getId());
             }
             id = users.get(name);
-            if(id == null){
+            if (id == null) {
                 throw new RuntimeException("No such user exists");
             } else {
                 return id;

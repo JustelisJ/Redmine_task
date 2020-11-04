@@ -1,6 +1,6 @@
 package redmine.rest.api.model.jira;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class JiraAuthor {

@@ -5,6 +5,7 @@ import redmine.rest.api.model.redmineData.UserData;
 public interface UserService {
 
     UserData getUsers();
+
     Long findUserIdByName(String name);
 
 }
