@@ -4,6 +4,6 @@ import java.util.Optional;
 
 public interface IssueService {
 
-    Optional<Long> getIssueFromName(String name);
+    Optional<Long> getIssueIdFromName(String name);
 
 }

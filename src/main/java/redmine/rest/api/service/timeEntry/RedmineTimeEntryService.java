@@ -45,7 +45,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
         //TODO: Vietoj exception, kad grazintu tuscia Optional ir
         // kad praleistu arba kazkur surasytu klaidingus entries
         PostTimeEntry timeEntry = PostTimeEntry.builder()
-                .issue_id(issueService.getIssueFromName(jiraWorkLog.getIssue().getKey()).get())
+                .issue_id(issueService.getIssueIdFromName(jiraWorkLog.getIssue().getKey()).get())
                 .user_id(userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName()).get())
                 .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
                 .comments(jiraWorkLog.getDescription())

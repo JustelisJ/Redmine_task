@@ -30,7 +30,7 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Optional<Long> getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
+    public Optional<Long> getIssueIdFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
         Long id = issues.getOrDefault(name, null);
         if (id == null) {
             throw new NoIssueFoundException();

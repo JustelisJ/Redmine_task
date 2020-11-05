@@ -1,12 +1,16 @@
 package redmine.rest.api.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
 

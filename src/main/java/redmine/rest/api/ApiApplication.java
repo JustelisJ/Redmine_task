@@ -25,24 +25,24 @@ public class ApiApplication {
         SpringApplication.run(ApiApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner runner(TimeEntryService entryService, @Value("${data_url}") String data_url) {
-        return args -> {
-            // read json and post on service
-            ObjectMapper mapper = new ObjectMapper();
-            TypeReference<JiraPackage> typeReference = new TypeReference<>() {
-            };
-            InputStream inputStream = TypeReference.class.getResourceAsStream(data_url);
-            try {
-                JiraPackage jiraPackage = mapper.readValue(inputStream, typeReference);
-                for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
-                    entryService.postJiraWorkLog(workLog);
-                }
-                log.info("Users Saved!");
-            } catch (IOException e) {
-                log.error("Unable to save users: " + e.getMessage());
-            }
-        };
-    }
+//    @Bean
+//    CommandLineRunner runner(TimeEntryService entryService, @Value("${data_url}") String data_url) {
+//        return args -> {
+//            // read json and post on service
+//            ObjectMapper mapper = new ObjectMapper();
+//            TypeReference<JiraPackage> typeReference = new TypeReference<>() {
+//            };
+//            InputStream inputStream = TypeReference.class.getResourceAsStream(data_url);
+//            try {
+//                JiraPackage jiraPackage = mapper.readValue(inputStream, typeReference);
+//                for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
+//                    entryService.postJiraWorkLog(workLog);
+//                }
+//                log.info("Users Saved!");
+//            } catch (IOException e) {
+//                log.error("Unable to save users: " + e.getMessage());
+//            }
+//        };
+//    }
 
 }
