@@ -2,11 +2,13 @@ package redmine.rest.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.service.timeEntry.TimeEntryService;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @SpringBootApplication
+@Log4j2
+@EnableScheduling
 public class ApiApplication {
 
     public static void main(String[] args) {
@@ -34,9 +38,9 @@ public class ApiApplication {
                 for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
                     entryService.postJiraWorkLog(workLog);
                 }
-                System.out.println("Users Saved!");
+                log.info("Users Saved!");
             } catch (IOException e) {
-                System.out.println("Unable to save users: " + e.getMessage());
+                log.error("Unable to save users: " + e.getMessage());
             }
         };
     }

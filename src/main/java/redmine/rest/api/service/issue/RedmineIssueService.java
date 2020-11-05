@@ -1,6 +1,8 @@
 package redmine.rest.api.service.issue;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.exception.NoIssueFoundException;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class RedmineIssueService implements IssueService {
 
@@ -28,16 +31,9 @@ public class RedmineIssueService implements IssueService {
 
     @Override
     public Optional<Long> getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
-        Long id = issues.get(name);
+        Long id = issues.getOrDefault(name, null);
         if (id == null) {
-            mapAllIssues();
-            id = issues.get(name);
-            if (id == null) {
-                throw new NoIssueFoundException();
-
-            } else {
-                return Optional.of(id);
-            }
+            throw new NoIssueFoundException();
         } else {
             return Optional.of(id);
         }
@@ -47,10 +43,12 @@ public class RedmineIssueService implements IssueService {
         return restTemplate.getForObject(url, IssueData.class);
     }
 
+    @Scheduled(fixedRate = 10000)
     private void mapAllIssues() {
         IssueData issueData = getIssues();
         for (Issue issue : issueData.getIssues()) {
             issues.put(issue.getSubject(), issue.getId());
         }
+        log.info("Mapped all issues");
     }
 }

@@ -2,6 +2,7 @@ package redmine.rest.api.service.user;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.exception.NoUserFoundException;
@@ -30,16 +31,10 @@ public class RedmineUserService implements UserService {
 
     @Override
     public Optional<Long> findUserIdByName(String name) {
-        Long id = users.get(name);
+        Long id = users.getOrDefault(name, null);
         if (id == null) {
-            mapAllUsers();
-            id = users.get(name);
-            if (id == null) {
-                log.error("No such user in redmine", new NoUserFoundException());
-                throw new NoUserFoundException();
-            } else {
-                return Optional.of(id);
-            }
+            log.error("No such user in redmine", new NoUserFoundException());
+            throw new NoUserFoundException();
         } else {
             return Optional.of(id);
         }
@@ -49,11 +44,13 @@ public class RedmineUserService implements UserService {
         return restTemplate.getForObject(url, UserData.class);
     }
 
+    @Scheduled(fixedRate = 10000)
     private void mapAllUsers() {
         UserData userData = getUsers();
         for (User user : userData.getUsers()) {
             users.put(getFirstnameAndLastname(user), user.getId());
         }
+        log.info("Mapped all users");
     }
 
     private String getFirstnameAndLastname(User user) {

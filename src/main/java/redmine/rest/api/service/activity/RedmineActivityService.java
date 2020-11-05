@@ -1,6 +1,8 @@
 package redmine.rest.api.service.activity;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.Activity;
@@ -8,9 +10,9 @@ import redmine.rest.api.model.redmineData.ActivityData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class RedmineActivityService implements ActivityService {
 
@@ -29,25 +31,15 @@ public class RedmineActivityService implements ActivityService {
 
     @Override
     public Optional<Long> findActivityFromName(String name) {
-        Long id = activities.get(name);
-        if (id == null) {
-            mapAllActivities();
-            id = activities.get(name);
-            if (Objects.isNull(id)) {
-                //return activities.get("default");
-                return Optional.of(DEFAULT_VALUE_TEMP);
-            } else {
-                return Optional.of(id);
-            }
-        } else {
-            return Optional.of(id);
-        }
+        Long id = activities.getOrDefault(name, DEFAULT_VALUE_TEMP);
+        return Optional.of(id);
     }
 
     private ActivityData getActivities() {
         return restTemplate.getForObject(url, ActivityData.class);
     }
 
+    @Scheduled(fixedRate = 10000)
     private void mapAllActivities() {
         ActivityData activityData = getActivities();
         for (Activity activity : activityData.getTime_entry_activities()) {
@@ -56,5 +48,6 @@ public class RedmineActivityService implements ActivityService {
                 activities.put("default", activity.getId());
             }
         }
+        log.info("Mapped all activities");
     }
 }
