@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import redmine.rest.api.model.TimeEntry;
-import redmine.rest.api.model.jira.JiraResult;
+import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
@@ -57,13 +57,13 @@ class RedmineTimeEntryServiceTest {
 
     @Test
     void postTimeEntry() {
-        when(entryService.postTimeEntry(any())).thenReturn(postData);
+        when(entryService.postJiraWorkLog(any())).thenReturn(postData);
 
         PostTimeEntryData returnedPost =
-                entryService.postTimeEntry(new JiraResult());
+                entryService.postJiraWorkLog(new JiraWorkLog());
 
         assertNotNull(returnedPost);
         assertEquals(returnedPost, postData);
-        verify(entryService).postTimeEntry(any());
+        verify(entryService).postJiraWorkLog(any());
     }
 }

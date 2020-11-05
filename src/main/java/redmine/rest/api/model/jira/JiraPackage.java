@@ -9,6 +9,6 @@ public class JiraPackage {
 
     private String self;
     private JiraMetadata metadata;
-    private Set<JiraResult> results;
+    private Set<JiraWorkLog> workLogs;
 
 }

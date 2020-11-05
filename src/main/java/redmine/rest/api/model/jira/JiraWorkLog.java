@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class JiraResult {
+public class JiraWorkLog {
 
     private String self;
     private Long tempoWorklogId;

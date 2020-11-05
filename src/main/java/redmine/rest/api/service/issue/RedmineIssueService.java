@@ -26,11 +26,6 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public IssueData getIssues() {
-        return restTemplate.getForObject(url, IssueData.class);
-    }
-
-    @Override
     public Long getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
         Long id = issues.get(name);
         if (id == null) {
@@ -44,6 +39,10 @@ public class RedmineIssueService implements IssueService {
         } else {
             return id;
         }
+    }
+
+    public IssueData getIssues() {
+        return restTemplate.getForObject(url, IssueData.class);
     }
 
     private void mapAllIssues() {

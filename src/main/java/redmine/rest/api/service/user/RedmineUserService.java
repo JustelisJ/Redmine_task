@@ -26,11 +26,6 @@ public class RedmineUserService implements UserService {
     }
 
     @Override
-    public UserData getUsers() {
-        return restTemplate.getForObject(url, UserData.class);
-    }
-
-    @Override
     public Long findUserIdByName(String name) {
         Long id = users.get(name);
         if (id == null) {
@@ -44,6 +39,10 @@ public class RedmineUserService implements UserService {
         } else {
             return id;
         }
+    }
+
+    public UserData getUsers() {
+        return restTemplate.getForObject(url, UserData.class);
     }
 
     private void mappAllUsers() {

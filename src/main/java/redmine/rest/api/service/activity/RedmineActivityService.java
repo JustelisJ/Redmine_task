@@ -16,6 +16,7 @@ public class RedmineActivityService implements ActivityService {
     private final String url;
     private RestTemplate restTemplate;
     private Map<String, Long> activities;
+    private final Long DEFAULT_VALUE_TEMP = 5L;
 
     public RedmineActivityService(RestTemplate restTemplate,
                                   @Value("${redmine.url}") String url) {
@@ -26,11 +27,6 @@ public class RedmineActivityService implements ActivityService {
     }
 
     @Override
-    public ActivityData getActivities() {
-        return restTemplate.getForObject(url, ActivityData.class);
-    }
-
-    @Override
     public Long findActivityFromName(String name) {
         Long id = activities.get(name);
         if (id == null) {
@@ -38,7 +34,7 @@ public class RedmineActivityService implements ActivityService {
             id = activities.get(name);
             if (Objects.isNull(id)) {
                 //return activities.get("default");
-                return 5L;
+                return DEFAULT_VALUE_TEMP;
             } else {
                 return id;
             }
@@ -46,7 +42,11 @@ public class RedmineActivityService implements ActivityService {
             return id;
         }
     }
-    
+
+    private ActivityData getActivities() {
+        return restTemplate.getForObject(url, ActivityData.class);
+    }
+
     private void mapAllActivities() {
         ActivityData activityData = getActivities();
         for (Activity activity : activityData.getTime_entry_activities()) {

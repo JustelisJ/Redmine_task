@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.model.jira.JiraResult;
+import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.PostTimeEntryData;
 import redmine.rest.api.model.redmineData.TimeEntryData;
@@ -15,6 +15,9 @@ import redmine.rest.api.service.user.UserService;
 
 @Service
 public class RedmineTimeEntryService implements TimeEntryService {
+
+    private final int SECONDS_IN_MINUTE = 60;
+    private final int MINUTES_IN_HOUR = 60;
 
     private final String url;
     private final HttpHeaders httpHeader;
@@ -43,13 +46,13 @@ public class RedmineTimeEntryService implements TimeEntryService {
     }
 
     @Override
-    public PostTimeEntryData postTimeEntry(JiraResult jiraResult) {
+    public PostTimeEntryData postJiraWorkLog(JiraWorkLog jiraWorkLog) {
         PostTimeEntry postTimeEntry = PostTimeEntry.builder()
-                .issue_id(issueService.getIssueFromName(jiraResult.getIssue().getKey()))
-                .user_id(userService.findUserIdByName(jiraResult.getAuthor().getDisplayName()))
-                .hours(secondsToHoursConverter(jiraResult.getTimeSpentSeconds()))
-                .comments(jiraResult.getDescription())
-                .activity_id(activityService.findActivityFromName(jiraResult.getDescription()))
+                .issue_id(issueService.getIssueFromName(jiraWorkLog.getIssue().getKey()))
+                .user_id(userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName()))
+                .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
+                .comments(jiraWorkLog.getDescription())
+                .activity_id(activityService.findActivityFromName(jiraWorkLog.getDescription()))
                 .build();
         PostTimeEntryData timeEntry = new PostTimeEntryData(postTimeEntry);
 
@@ -57,7 +60,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
     }
 
     private double secondsToHoursConverter(int seconds) {
-        return (double) seconds / 60 / 60;
+        return (double) seconds / SECONDS_IN_MINUTE / MINUTES_IN_HOUR;
     }
 
 }
