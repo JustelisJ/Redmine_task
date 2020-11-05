@@ -5,14 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import redmine.rest.api.model.Activity;
+import redmine.rest.api.model.Issue;
 import redmine.rest.api.model.TimeEntry;
-import redmine.rest.api.model.redmineData.PostTimeEntryData;
+import redmine.rest.api.model.User;
+import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,23 +28,20 @@ class RedmineTimeEntryServiceTest {
     TimeEntryService entryService;
     List<TimeEntry> timeEntries;
     TimeEntryData data;
-    PostTimeEntryData postData;
+    TimeEntry responseData;
 
     @BeforeEach
     void setUp() {
-        PostTimeEntryData postData = PostTimeEntryData.builder()
-                .issue_id(3L)
-                .user_id(7L)
+        responseData = TimeEntry.builder()
+                .issue(Issue.builder().id(3L).build())
+                .user(User.builder().id(7L).firstname("Baubas").build())
                 .hours(2)
                 .comments("hehe")
-                .activity_id(null)
+                .activity(Activity.builder().id(6L).build())
                 .build();
-        //postData = PostTimeEntryData.builder().time_entry(postTimeEntry).build();
-        TimeEntry entry1 = TimeEntry.builder().id(1L).hours(2).build();
-        TimeEntry entry2 = TimeEntry.builder().id(2L).hours(1).build();
         timeEntries = new ArrayList<>();
-        timeEntries.add(entry1);
-        timeEntries.add(entry2);
+        timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(1L).hours(2).build());
+        timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(2L).hours(1).build());
         data = TimeEntryData.builder().time_entries(timeEntries).build();
     }
 
@@ -52,13 +55,14 @@ class RedmineTimeEntryServiceTest {
 
     @Test
     void postTimeEntry() {
-//        when(entryService.postJiraWorkLog(any())).thenReturn(postData);
-//
-//        TimeEntry returnedPost =
-//                entryService.postJiraWorkLog(new JiraWorkLog());
-//
-//        assertNotNull(returnedPost);
-//        assertEquals(returnedPost, postData);
-//        verify(entryService).postJiraWorkLog(any());
+        when(entryService.postJiraWorkLog(any())).thenReturn(responseData);
+
+        TimeEntry returnedPost =
+                entryService.postJiraWorkLog(new JiraWorkLog());
+
+        assertNotNull(returnedPost);
+        assertEquals(returnedPost, responseData);
+        assertEquals(returnedPost.getUser().getFirstname(), "Baubas");
+        verify(entryService).postJiraWorkLog(any());
     }
 }

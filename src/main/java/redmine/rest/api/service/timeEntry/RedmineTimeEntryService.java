@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraWorkLog;
-import redmine.rest.api.model.redmineData.PostTimeEntryData;
+import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 import redmine.rest.api.service.activity.ActivityService;
 import redmine.rest.api.service.issue.IssueService;
@@ -44,7 +44,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
     public TimeEntry postJiraWorkLog(JiraWorkLog jiraWorkLog) {
         //TODO: Vietoj exception, kad grazintu tuscia Optional ir
         // kad praleistu arba kazkur surasytu klaidingus entries
-        PostTimeEntryData timeEntry = PostTimeEntryData.builder()
+        PostTimeEntry timeEntry = PostTimeEntry.builder()
                 .issue_id(issueService.getIssueFromName(jiraWorkLog.getIssue().getKey()).get())
                 .user_id(userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName()).get())
                 .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @JsonRootName("time_entry")
-public class PostTimeEntryData {
+public class PostTimeEntry {
 
     private Long issue_id;
     private Long user_id;
