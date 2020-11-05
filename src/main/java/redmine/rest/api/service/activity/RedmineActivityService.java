@@ -11,17 +11,18 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class ActivityServiceImpl implements ActivityService {
+public class RedmineActivityService implements ActivityService {
 
     private final String url;
     private RestTemplate restTemplate;
     private Map<String, Long> activities;
 
-    public ActivityServiceImpl(RestTemplate restTemplate,
-                               @Value("${redmine.url}") String url) {
+    public RedmineActivityService(RestTemplate restTemplate,
+                                  @Value("${redmine.url}") String url) {
         this.restTemplate = restTemplate;
         this.url = url + "/enumerations/time_entry_activities.json";
         activities = new HashMap<>();
+        mapAllActivities();
     }
 
     @Override
@@ -33,13 +34,7 @@ public class ActivityServiceImpl implements ActivityService {
     public Long findActivityFromName(String name) {
         Long id = activities.get(name);
         if (id == null) {
-            ActivityData activityData = getActivities();
-            for (Activity activity : activityData.getTime_entry_activities()) {
-                activities.put(activity.getName(), activity.getId());
-                if (activity.is_default()) {      //TODO: Why u no get is_default field???
-                    activities.put("default", activity.getId());
-                }
-            }
+            mapAllActivities();
             id = activities.get(name);
             if (Objects.isNull(id)) {
                 //return activities.get("default");
@@ -49,6 +44,16 @@ public class ActivityServiceImpl implements ActivityService {
             }
         } else {
             return id;
+        }
+    }
+    
+    private void mapAllActivities() {
+        ActivityData activityData = getActivities();
+        for (Activity activity : activityData.getTime_entry_activities()) {
+            activities.put(activity.getName(), activity.getId());
+            if (activity.is_default()) {      //TODO: Why u no get is_default field???
+                activities.put("default", activity.getId());
+            }
         }
     }
 }

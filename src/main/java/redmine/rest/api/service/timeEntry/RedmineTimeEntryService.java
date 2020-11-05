@@ -14,7 +14,7 @@ import redmine.rest.api.service.issue.IssueService;
 import redmine.rest.api.service.user.UserService;
 
 @Service
-public class TimeEntryServiceImpl implements TimeEntryService {
+public class RedmineTimeEntryService implements TimeEntryService {
 
     private final String url;
     private final HttpHeaders httpHeader;
@@ -23,11 +23,11 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     private final ActivityService activityService;
     private RestTemplate restTemplate;
 
-    public TimeEntryServiceImpl(RestTemplate restTemplate,
-                                @Value("${redmine.url}") String url,
-                                IssueService issueService,
-                                UserService userService,
-                                ActivityService activityService) {
+    public RedmineTimeEntryService(RestTemplate restTemplate,
+                                   @Value("${redmine.url}") String url,
+                                   IssueService issueService,
+                                   UserService userService,
+                                   ActivityService activityService) {
         this.restTemplate = restTemplate;
         this.issueService = issueService;
         this.userService = userService;
