@@ -1,5 +1,6 @@
 package redmine.rest.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +12,13 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"time_entry"})
 public class TimeEntry {
+
 
     private Long id;
     private Project project;
+    private Issue issue;
     private User user;
     private Activity activity;
     private double hours;

@@ -1,7 +1,9 @@
 package redmine.rest.api.service.activity;
 
+import java.util.Optional;
+
 public interface ActivityService {
 
-    Long findActivityFromName(String name);
+    Optional<Long> findActivityFromName(String name);
 
 }

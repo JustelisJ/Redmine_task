@@ -1,5 +1,6 @@
 package redmine.rest.api.model.redmineData;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonRootName("time_entry")
 public class PostTimeEntryData {
 
-    private PostTimeEntry time_entry;
+    private Long issue_id;
+    private Long user_id;
+    private double hours;
+    private String comments;
+    private Long activity_id;
 
 }

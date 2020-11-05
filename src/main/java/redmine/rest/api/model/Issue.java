@@ -1,5 +1,6 @@
 package redmine.rest.api.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ public class Issue {
     private Date start_date;
     private Date due_date;
     private int done_ratio;
+    @JsonAlias("is_private")
     private boolean is_private;
     private double estimated_hours;
     private Date created_on;

@@ -47,7 +47,7 @@
                             <tr th:each="entry : ${timeEntries.getTime_entries()}">
                                 <!--/*@thymesVar id="entry" type="redmine.rest.api.model.TimeEntry"*/-->
                                 <td th:text="${entry.project.name}">Project name</td>
-                                <td th:text="${entry.user.name}">User name</td>
+                                <td th:text="${entry.user.firstname}">User name</td>
                                 <td th:text="${entry.activity.name}">Activity name</td>
                                 <td th:text="${entry.hours}">Hours</td>
                                 <td th:text="${entry.comments}">Comment</td>

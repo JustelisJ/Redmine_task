@@ -9,6 +9,7 @@ import redmine.rest.api.model.redmineData.IssueData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RedmineIssueService implements IssueService {
@@ -26,22 +27,23 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Long getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
+    public Optional<Long> getIssueFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
         Long id = issues.get(name);
         if (id == null) {
             mapAllIssues();
             id = issues.get(name);
             if (id == null) {
                 throw new NoIssueFoundException();
+
             } else {
-                return id;
+                return Optional.of(id);
             }
         } else {
-            return id;
+            return Optional.of(id);
         }
     }
 
-    public IssueData getIssues() {
+    private IssueData getIssues() {
         return restTemplate.getForObject(url, IssueData.class);
     }
 

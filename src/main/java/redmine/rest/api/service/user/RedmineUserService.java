@@ -1,5 +1,6 @@
 package redmine.rest.api.service.user;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,7 +10,9 @@ import redmine.rest.api.model.redmineData.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+@Log4j2
 @Service
 public class RedmineUserService implements UserService {
 
@@ -22,33 +25,38 @@ public class RedmineUserService implements UserService {
         this.restTemplate = restTemplate;
         this.url = url + "/users.json";
         users = new HashMap<>();
-        mappAllUsers();
+        mapAllUsers();
     }
 
     @Override
-    public Long findUserIdByName(String name) {
+    public Optional<Long> findUserIdByName(String name) {
         Long id = users.get(name);
         if (id == null) {
-            mappAllUsers();
+            mapAllUsers();
             id = users.get(name);
             if (id == null) {
+                log.error("No such user in redmine", new NoUserFoundException());
                 throw new NoUserFoundException();
             } else {
-                return id;
+                return Optional.of(id);
             }
         } else {
-            return id;
+            return Optional.of(id);
         }
     }
 
-    public UserData getUsers() {
+    private UserData getUsers() {
         return restTemplate.getForObject(url, UserData.class);
     }
 
-    private void mappAllUsers() {
+    private void mapAllUsers() {
         UserData userData = getUsers();
         for (User user : userData.getUsers()) {
-            users.put(user.getFirstname() + " " + user.getLastname(), user.getId());
+            users.put(getFirstnameAndLastname(user), user.getId());
         }
+    }
+
+    private String getFirstnameAndLastname(User user) {
+        return user.getFirstname() + " " + user.getLastname();
     }
 }

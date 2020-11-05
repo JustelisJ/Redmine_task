@@ -9,6 +9,7 @@ import redmine.rest.api.model.redmineData.ActivityData;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class RedmineActivityService implements ActivityService {
@@ -27,19 +28,19 @@ public class RedmineActivityService implements ActivityService {
     }
 
     @Override
-    public Long findActivityFromName(String name) {
+    public Optional<Long> findActivityFromName(String name) {
         Long id = activities.get(name);
         if (id == null) {
             mapAllActivities();
             id = activities.get(name);
             if (Objects.isNull(id)) {
                 //return activities.get("default");
-                return DEFAULT_VALUE_TEMP;
+                return Optional.of(DEFAULT_VALUE_TEMP);
             } else {
-                return id;
+                return Optional.of(id);
             }
         } else {
-            return id;
+            return Optional.of(id);
         }
     }
 
