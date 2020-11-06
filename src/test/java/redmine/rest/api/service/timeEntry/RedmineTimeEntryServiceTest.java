@@ -15,6 +15,7 @@ import redmine.rest.api.model.redmineData.TimeEntryData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,17 +31,17 @@ class RedmineTimeEntryServiceTest {
     TimeEntryService entryService;
     List<TimeEntry> timeEntries;
     TimeEntryData data;
-    TimeEntry responseData;
+    Optional<TimeEntry> responseData;
 
     @BeforeEach
     void setUp() {
-        responseData = TimeEntry.builder()
+        responseData = Optional.of(TimeEntry.builder()
                 .issue(Issue.builder().id(3L).build())
                 .user(User.builder().id(7L).firstname("Baubas").build())
                 .hours(2)
                 .comments("hehe")
                 .activity(Activity.builder().id(6L).build())
-                .build();
+                .build());
         timeEntries = new ArrayList<>();
         timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(1L).hours(2).build());
         timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(2L).hours(1).build());
@@ -60,7 +61,7 @@ class RedmineTimeEntryServiceTest {
         when(entryService.postJiraWorkLog(any())).thenReturn(responseData);
 
         TimeEntry returnedPost =
-                entryService.postJiraWorkLog(new JiraWorkLog());
+                entryService.postJiraWorkLog(new JiraWorkLog()).get();
 
         assertNotNull(returnedPost);
         assertEquals(returnedPost, responseData);

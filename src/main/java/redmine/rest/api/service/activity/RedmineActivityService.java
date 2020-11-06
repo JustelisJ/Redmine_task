@@ -19,7 +19,6 @@ public class RedmineActivityService implements ActivityService {
     private final String url;
     private RestTemplate restTemplate;
     private Map<String, Long> activities;
-    private final Long DEFAULT_VALUE_TEMP = 5L;
 
     public RedmineActivityService(RestTemplate restTemplate,
                                   @Value("${redmine.url}") String url) {
@@ -31,7 +30,7 @@ public class RedmineActivityService implements ActivityService {
 
     @Override
     public Optional<Long> findActivityFromName(String name) {
-        Long id = activities.getOrDefault(name, DEFAULT_VALUE_TEMP);
+        Long id = activities.getOrDefault(name, activities.get("default"));
         return Optional.of(id);
     }
 
@@ -39,12 +38,12 @@ public class RedmineActivityService implements ActivityService {
         return restTemplate.getForObject(url, ActivityData.class);
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 300000)
     private void mapAllActivities() {
         ActivityData activityData = getActivities();
         for (Activity activity : activityData.getTime_entry_activities()) {
             activities.put(activity.getName(), activity.getId());
-            if (activity.is_default()) {      //TODO: Why u no get is_default field???
+            if (activity.is_default()) {
                 activities.put("default", activity.getId());
             }
         }

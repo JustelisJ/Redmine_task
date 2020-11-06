@@ -1,5 +1,8 @@
 package redmine.rest.api.service.timeEntry;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,9 +14,16 @@ import redmine.rest.api.service.activity.ActivityService;
 import redmine.rest.api.service.issue.IssueService;
 import redmine.rest.api.service.user.UserService;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Optional;
+
+@Log4j2
 @Service
 public class RedmineTimeEntryService implements TimeEntryService {
 
+    private static final int OFFSET = 1;
     private final int SECONDS_IN_MINUTE = 60;
     private final int MINUTES_IN_HOUR = 60;
 
@@ -21,18 +31,25 @@ public class RedmineTimeEntryService implements TimeEntryService {
     private final IssueService issueService;
     private final UserService userService;
     private final ActivityService activityService;
+
+    private final File incorrectJSONFile;
+    private int incorrectJSONObjects;
+
     private RestTemplate restTemplate;
 
     public RedmineTimeEntryService(RestTemplate restTemplate,
                                    @Value("${redmine.url}") String url,
                                    IssueService issueService,
                                    UserService userService,
-                                   ActivityService activityService) {
+                                   ActivityService activityService,
+                                   File incorrectJSONFile) {
         this.restTemplate = restTemplate;
         this.issueService = issueService;
         this.userService = userService;
         this.activityService = activityService;
         this.url = url + "/time_entries.json";
+        this.incorrectJSONFile = incorrectJSONFile;
+        incorrectJSONObjects = 0;
     }
 
     @Override
@@ -41,22 +58,56 @@ public class RedmineTimeEntryService implements TimeEntryService {
     }
 
     @Override
-    public TimeEntry postJiraWorkLog(JiraWorkLog jiraWorkLog) {
-        //TODO: Vietoj exception, kad grazintu tuscia Optional ir
-        // kad praleistu arba kazkur surasytu klaidingus entries
-        PostTimeEntry timeEntry = PostTimeEntry.builder()
-                .issue_id(issueService.getIssueIdFromName(jiraWorkLog.getIssue().getKey()).get())
-                .user_id(userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName()).get())
-                .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
-                .comments(jiraWorkLog.getDescription())
-                .activity_id(activityService.findActivityFromName(jiraWorkLog.getDescription()).get())
-                .build();
+    public Optional<TimeEntry> postJiraWorkLog(JiraWorkLog jiraWorkLog) {
+        PostTimeEntry timeEntry;
+        try {
+            timeEntry = PostTimeEntry.builder()
+                    .issue_id(issueService.getIssueIdFromName(jiraWorkLog.getIssue().getKey()).get())
+                    .user_id(userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName()).get())
+                    .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
+                    .comments(jiraWorkLog.getDescription())
+                    .activity_id(activityService.findActivityFromName(jiraWorkLog.getDescription()).get())
+                    .build();
+            return Optional.of(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
+        } catch (Exception e) {
+            logWrongJSONToFile(jiraWorkLog, e);
+            return Optional.empty();
+        }
+    }
 
-        return restTemplate.postForObject(url, timeEntry, TimeEntry.class);
+    private void logWrongJSONToFile(JiraWorkLog workLog, Exception e) {
+        try {
+            if (incorrectJSONFile.createNewFile()) {
+                initializeIncorrectJSONFile(incorrectJSONFile);
+                log.info("Incorrent JSON object file is created");
+            }
+            FileWriter writer = new FileWriter(incorrectJSONFile, true);
+            String json = createWorkLogJSONWithErrorParameter(workLog, e);
+            writer.write(json + "\n]");
+            writer.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private void initializeIncorrectJSONFile(File file) {
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write("[\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createWorkLogJSONWithErrorParameter(JiraWorkLog log, Exception e) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(log);
+        String exceptionJSON = ",\"exception\":\"" + e.getMessage() + "\"";
+        return new StringBuilder(json).insert(json.length() - 1, exceptionJSON).toString();
     }
 
     private double secondsToHoursConverter(int seconds) {
         return (double) seconds / SECONDS_IN_MINUTE / MINUTES_IN_HOUR;
     }
-
 }

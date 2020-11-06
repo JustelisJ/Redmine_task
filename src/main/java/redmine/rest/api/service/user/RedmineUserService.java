@@ -30,10 +30,9 @@ public class RedmineUserService implements UserService {
     }
 
     @Override
-    public Optional<Long> findUserIdByName(String name) {
+    public Optional<Long> findUserIdByName(String name) throws NoUserFoundException {
         Long id = users.getOrDefault(name, null);
         if (id == null) {
-            log.error("No such user in redmine", new NoUserFoundException());
             throw new NoUserFoundException();
         } else {
             return Optional.of(id);
@@ -44,7 +43,7 @@ public class RedmineUserService implements UserService {
         return restTemplate.getForObject(url, UserData.class);
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 300000)
     private void mapAllUsers() {
         UserData userData = getUsers();
         for (User user : userData.getUsers()) {

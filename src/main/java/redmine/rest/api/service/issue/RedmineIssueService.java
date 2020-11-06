@@ -30,7 +30,7 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Optional<Long> getIssueIdFromName(String name) { //TODO: JSON'e nera pavadinimo, reik ieskot pagal key
+    public Optional<Long> getIssueIdFromName(String name) throws NoIssueFoundException {
         Long id = issues.getOrDefault(name, null);
         if (id == null) {
             throw new NoIssueFoundException();
@@ -43,7 +43,7 @@ public class RedmineIssueService implements IssueService {
         return restTemplate.getForObject(url, IssueData.class);
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 300000)
     private void mapAllIssues() {
         IssueData issueData = getIssues();
         for (Issue issue : issueData.getIssues()) {
