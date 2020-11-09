@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,5 +20,6 @@ public class PostTimeEntry {
     private double hours;
     private String comments;
     private Long activity_id;
+    private Date spent_on;
 
 }

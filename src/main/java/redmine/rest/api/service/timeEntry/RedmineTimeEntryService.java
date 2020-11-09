@@ -64,6 +64,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
                     .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
                     .comments(jiraWorkLog.getDescription())
                     .activity_id(activityService.findActivityFromName(jiraWorkLog.getDescription()).get())
+                    .spent_on(jiraWorkLog.getStartDate())
                     .build();
             return Optional.of(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
         } catch (Exception e) {
@@ -85,6 +86,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
                         .hours(secondsToHoursConverter(workLog.getTimeSpentSeconds()))
                         .comments(workLog.getDescription())
                         .activity_id(activityService.findActivityFromName(workLog.getDescription()).get())
+                        .spent_on(workLog.getStartDate())
                         .build();
                 postedEntries.add(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
             } catch (Exception e) {
