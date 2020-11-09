@@ -6,7 +6,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@JsonIgnoreProperties({"exception"})
+@JsonIgnoreProperties({"self", "tempoWorklogId", "jiraWorklogId", "billableSeconds",
+        "startTime", "createdAt", "updatedAt", "attributes", "exception"})
 public class JiraWorkLog {
 
     private JiraIssue issue;

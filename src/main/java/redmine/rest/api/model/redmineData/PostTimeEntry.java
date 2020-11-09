@@ -1,5 +1,6 @@
 package redmine.rest.api.model.redmineData;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class PostTimeEntry {
     private double hours;
     private String comments;
     private Long activity_id;
+    @JsonFormat(pattern = "yyy-MM-dd")
     private Date spent_on;
 
 }
