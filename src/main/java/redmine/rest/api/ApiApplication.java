@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import redmine.rest.api.model.jira.JiraPackage;
-import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.service.timeEntry.TimeEntryService;
 
 import java.io.IOException;
@@ -35,9 +34,7 @@ public class ApiApplication {
             InputStream inputStream = TypeReference.class.getResourceAsStream(data_url);
             try {
                 JiraPackage jiraPackage = mapper.readValue(inputStream, typeReference);
-                for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
-                    entryService.postJiraWorkLog(workLog);
-                }
+                entryService.postJiraWorkLogs(jiraPackage);
                 log.info("Users Saved!");
             } catch (IOException e) {
                 log.error("Unable to save users: " + e.getMessage());

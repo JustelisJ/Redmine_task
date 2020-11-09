@@ -10,6 +10,7 @@ import redmine.rest.api.model.Activity;
 import redmine.rest.api.model.Issue;
 import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.User;
+import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redmineData.TimeEntryData;
 
@@ -32,6 +33,7 @@ class RedmineTimeEntryServiceTest {
     List<TimeEntry> timeEntries;
     TimeEntryData data;
     Optional<TimeEntry> responseData;
+    Optional<ArrayList<TimeEntry>> responseData2;
 
     @BeforeEach
     void setUp() {
@@ -42,6 +44,9 @@ class RedmineTimeEntryServiceTest {
                 .comments("hehe")
                 .activity(Activity.builder().id(6L).build())
                 .build());
+        ArrayList<TimeEntry> list = new ArrayList<>();
+        list.add(responseData.get());
+        responseData2 = Optional.of(list);
         timeEntries = new ArrayList<>();
         timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(1L).hours(2).build());
         timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(2L).hours(1).build());
@@ -64,8 +69,21 @@ class RedmineTimeEntryServiceTest {
                 entryService.postJiraWorkLog(new JiraWorkLog()).get();
 
         assertNotNull(returnedPost);
-        assertEquals(returnedPost, responseData);
+        assertEquals(returnedPost, responseData.get());
         assertEquals(returnedPost.getUser().getFirstname(), "Baubas");
         verify(entryService).postJiraWorkLog(any());
+    }
+
+    @Test
+    void postTimeEntries() {
+        when(entryService.postJiraWorkLogs(any())).thenReturn(responseData2);
+
+        ArrayList<TimeEntry> returnedPost =
+                entryService.postJiraWorkLogs(new JiraPackage()).get();
+
+        assertNotNull(returnedPost);
+        assertEquals(returnedPost, responseData2.get());
+        assertEquals(returnedPost.get(0).getUser().getFirstname(), "Baubas");
+        verify(entryService).postJiraWorkLogs(any());
     }
 }

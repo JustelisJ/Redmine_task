@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import redmine.rest.api.model.jira.JiraPackage;
-import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.service.timeEntry.TimeEntryService;
 
 @Controller
@@ -28,9 +27,7 @@ public class TimeEntryController {
     public String createTimeEntryFromJSON(Model model, @RequestBody JiraPackage jiraPackage) {
 
         //Saves the received JSON
-        for (JiraWorkLog jiraWorkLog : jiraPackage.getWorkLogs()) {
-            timeEntryService.postJiraWorkLog(jiraWorkLog);
-        }
+        timeEntryService.postJiraWorkLogs(jiraPackage);
 
         model.addAttribute("timeEntries", timeEntryService.getTimeEntries());
         return "timeEntry/allTimeEntries";

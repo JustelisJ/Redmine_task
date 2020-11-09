@@ -1,10 +1,12 @@
 package redmine.rest.api.model.jira;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@JsonIgnoreProperties({"exception"})
 public class JiraWorkLog {
 
     private String self;

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.TimeEntry;
+import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redmineData.PostTimeEntry;
 import redmine.rest.api.model.redmineData.TimeEntryData;
@@ -17,13 +18,15 @@ import redmine.rest.api.service.user.UserService;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 
 @Log4j2
 @Service
 public class RedmineTimeEntryService implements TimeEntryService {
 
-    private static final int OFFSET = 1;
     private final int SECONDS_IN_MINUTE = 60;
     private final int MINUTES_IN_HOUR = 60;
 
@@ -32,24 +35,18 @@ public class RedmineTimeEntryService implements TimeEntryService {
     private final UserService userService;
     private final ActivityService activityService;
 
-    private final File incorrectJSONFile;
-    private int incorrectJSONObjects;
-
     private RestTemplate restTemplate;
 
     public RedmineTimeEntryService(RestTemplate restTemplate,
                                    @Value("${redmine.url}") String url,
                                    IssueService issueService,
                                    UserService userService,
-                                   ActivityService activityService,
-                                   File incorrectJSONFile) {
+                                   ActivityService activityService) {
         this.restTemplate = restTemplate;
         this.issueService = issueService;
         this.userService = userService;
         this.activityService = activityService;
         this.url = url + "/time_entries.json";
-        this.incorrectJSONFile = incorrectJSONFile;
-        incorrectJSONObjects = 0;
     }
 
     @Override
@@ -75,7 +72,34 @@ public class RedmineTimeEntryService implements TimeEntryService {
         }
     }
 
+    @Override
+    public Optional<ArrayList<TimeEntry>> postJiraWorkLogs(JiraPackage jiraPackage) {
+        ArrayList<TimeEntry> postedEntries = new ArrayList<>();
+        ArrayList<JiraWorkLog> failedPosts = new ArrayList<>();
+        ArrayList<Exception> postMessages = new ArrayList<>();
+        for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
+            try {
+                PostTimeEntry timeEntry = PostTimeEntry.builder()
+                        .issue_id(issueService.getIssueIdFromName(workLog.getIssue().getKey()).get())
+                        .user_id(userService.findUserIdByName(workLog.getAuthor().getDisplayName()).get())
+                        .hours(secondsToHoursConverter(workLog.getTimeSpentSeconds()))
+                        .comments(workLog.getDescription())
+                        .activity_id(activityService.findActivityFromName(workLog.getDescription()).get())
+                        .build();
+                postedEntries.add(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
+            } catch (Exception e) {
+                failedPosts.add(workLog);
+                postMessages.add(e);
+            }
+        }
+        if (!failedPosts.isEmpty()) {
+            logWrongJSONToFile(failedPosts, postMessages);
+        }
+        return Optional.of(postedEntries);
+    }
+
     private void logWrongJSONToFile(JiraWorkLog workLog, Exception e) {
+        File incorrectJSONFile = new File(getResourcesAbsolutePath());
         try {
             if (incorrectJSONFile.createNewFile()) {
                 initializeIncorrectJSONFile(incorrectJSONFile);
@@ -84,16 +108,49 @@ public class RedmineTimeEntryService implements TimeEntryService {
             FileWriter writer = new FileWriter(incorrectJSONFile, true);
             String json = createWorkLogJSONWithErrorParameter(workLog, e);
             writer.write(json + "\n]");
+            writer.flush();
             writer.close();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
+    private void logWrongJSONToFile(ArrayList<JiraWorkLog> workLogs, ArrayList<Exception> e) {
+        File incorrectJSONFile = new File(getResourcesAbsolutePath());
+        try {
+            if (incorrectJSONFile.createNewFile()) {
+                initializeIncorrectJSONFile(incorrectJSONFile);
+                log.info("Incorrent JSON object file is created");
+            }
+            FileWriter writer = new FileWriter(incorrectJSONFile, true);
+            for (int i = 0; i < workLogs.size(); i++) {
+                String json = createWorkLogJSONWithErrorParameter(workLogs.get(i), e.get(i));
+                if (i != workLogs.size() - 1) {
+                    writer.write(json + ",\n");
+                } else {
+                    writer.write(json + "\n]\n}");
+                }
+                writer.flush();
+            }
+            writer.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private String getResourcesAbsolutePath() {
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+        File currentDirFile = new File("");
+        String helper = currentDirFile.getAbsolutePath();
+        String currentDir = helper + "/src/main/resources/json/incorrect_" + timeStamp + ".json";
+        return currentDir;
+    }
+
     private void initializeIncorrectJSONFile(File file) {
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write("[\n");
+            writer.write("{\n\"results\": [\n");
+            writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
