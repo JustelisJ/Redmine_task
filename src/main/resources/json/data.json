@@ -39,7 +39,7 @@
       "jiraWorklogId": 10009,
       "issue": {
         "self": "https://redasrimkus.atlassian.net/rest/api/2/issue/NP-2",
-        "key": "NP-3",
+        "key": "NP-2",
         "id": 10005
       },
       "timeSpentSeconds": 7200,
@@ -79,7 +79,7 @@
       "author": {
         "self": "https://redasrimkus.atlassian.net/rest/api/2/user?accountId=5f96b2f4b45b2e00743158c1",
         "accountId": "5f96b2f4b45b2e00743158c1",
-        "displayName": "Redas Rimku"
+        "displayName": "Redas Rimkus"
       },
       "attributes": {
         "self": "https://api.tempo.io/core/3/worklogs/12/work-attribute-values",
