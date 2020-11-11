@@ -1,4 +1,4 @@
-package redmine.rest.api.json_writter;
+package redmine.rest.api.jsonwritter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

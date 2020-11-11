@@ -10,8 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import redmine.rest.api.model.TimeEntry;
-import redmine.rest.api.model.redmine_data.TimeEntryData;
-import redmine.rest.api.service.time_entry.TimeEntryService;
+import redmine.rest.api.model.redminedata.TimeEntryData;
+import redmine.rest.api.service.timeentry.TimeEntryService;
 
 import java.util.ArrayList;
 import java.util.List;

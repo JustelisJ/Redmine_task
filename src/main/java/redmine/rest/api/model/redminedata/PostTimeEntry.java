@@ -1,4 +1,4 @@
-package redmine.rest.api.model.redmine_data;
+package redmine.rest.api.model.redminedata;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;

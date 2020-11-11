@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.exception.IssueNotFoundException;
 import redmine.rest.api.model.Issue;
-import redmine.rest.api.model.redmine_data.IssueData;
+import redmine.rest.api.model.redminedata.IssueData;
 
 import java.util.HashMap;
 import java.util.Map;

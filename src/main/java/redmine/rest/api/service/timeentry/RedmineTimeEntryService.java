@@ -1,15 +1,15 @@
-package redmine.rest.api.service.time_entry;
+package redmine.rest.api.service.timeentry;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.json_writter.FailedPostWritterToFile;
+import redmine.rest.api.jsonwritter.FailedPostWritterToFile;
 import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
-import redmine.rest.api.model.redmine_data.PostTimeEntry;
-import redmine.rest.api.model.redmine_data.TimeEntryData;
+import redmine.rest.api.model.redminedata.PostTimeEntry;
+import redmine.rest.api.model.redminedata.TimeEntryData;
 import redmine.rest.api.service.activity.ActivityService;
 import redmine.rest.api.service.issue.IssueService;
 import redmine.rest.api.service.user.UserService;

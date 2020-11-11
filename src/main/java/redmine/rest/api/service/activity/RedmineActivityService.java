@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.Activity;
-import redmine.rest.api.model.redmine_data.ActivityData;
+import redmine.rest.api.model.redminedata.ActivityData;
 
 import java.util.HashMap;
 import java.util.Map;

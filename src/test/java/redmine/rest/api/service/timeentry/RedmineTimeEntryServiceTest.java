@@ -1,4 +1,4 @@
-package redmine.rest.api.service.time_entry;
+package redmine.rest.api.service.timeentry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.User;
 import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
-import redmine.rest.api.model.redmine_data.TimeEntryData;
+import redmine.rest.api.model.redminedata.TimeEntryData;
 
 import java.util.ArrayList;
 import java.util.List;

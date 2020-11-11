@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import redmine.rest.api.model.jira.JiraPackage;
-import redmine.rest.api.service.time_entry.TimeEntryService;
+import redmine.rest.api.service.timeentry.TimeEntryService;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.exception.UserNotFoundException;
 import redmine.rest.api.model.User;
-import redmine.rest.api.model.redmine_data.UserData;
+import redmine.rest.api.model.redminedata.UserData;
 
 import java.util.HashMap;
 import java.util.Map;

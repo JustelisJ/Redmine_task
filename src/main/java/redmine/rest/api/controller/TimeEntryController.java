@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import redmine.rest.api.model.jira.JiraPackage;
-import redmine.rest.api.service.time_entry.TimeEntryService;
+import redmine.rest.api.service.timeentry.TimeEntryService;
 
 @Controller
 public class TimeEntryController {
