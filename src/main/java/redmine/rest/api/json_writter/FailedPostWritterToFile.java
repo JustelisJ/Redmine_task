@@ -39,10 +39,8 @@ public class FailedPostWritterToFile {
         File incorrectJSONFile = new File(getResourcesAbsolutePath());
 
         try (FileWriter writer = new FileWriter(incorrectJSONFile, true)) {
-            if (incorrectJSONFile.createNewFile()) {
-                initializeIncorrectJSONFile(incorrectJSONFile);
-                log.info("Incorrent JSON object file is created");
-            }
+            log.info("Incorrent JSON object file is created");
+            initializeIncorrectJSONFile(incorrectJSONFile);
             for (int i = 0; i < workLogs.size(); i++) {
                 String json = createWorkLogJSONWithErrorParameter(workLogs.get(i), e.get(i));
                 if (i != workLogs.size() - 1) {
