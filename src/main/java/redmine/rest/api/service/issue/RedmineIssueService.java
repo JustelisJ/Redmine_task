@@ -42,21 +42,20 @@ public class RedmineIssueService implements IssueService {
         }
     }
 
-    private Optional<IssueData> getIssues() {
-        return Optional.of(restTemplate.getForObject(url, IssueData.class));
+    private IssueData getIssues() {
+        return restTemplate.getForObject(url, IssueData.class);
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllIssues() {
-        Optional<IssueData> optionalIssueData = getIssues();
-        if (optionalIssueData.isPresent()) {
-            IssueData issueData = optionalIssueData.get();
+        IssueData issueData = getIssues();
+        if (issueData != null) {
             for (Issue issue : issueData.getIssues()) {
                 issues.put(issue.getSubject(), issue.getId());
             }
             log.info(MAPPED_ISSUES_MESSAGE);
         } else {
-            log.warn(COULDNT_MAP_MESSAGE);
+            log.error(COULDNT_MAP_MESSAGE);
         }
     }
 }

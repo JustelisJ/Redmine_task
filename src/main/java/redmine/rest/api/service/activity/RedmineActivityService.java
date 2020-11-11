@@ -37,15 +37,14 @@ public class RedmineActivityService implements ActivityService {
         return Optional.of(id);
     }
 
-    private Optional<ActivityData> getActivities() {
-        return Optional.of(restTemplate.getForObject(url, ActivityData.class));
+    private ActivityData getActivities() {
+        return restTemplate.getForObject(url, ActivityData.class);
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllActivities() {
-        Optional<ActivityData> optionalActivityData = getActivities();
-        if (optionalActivityData.isPresent()) {
-            ActivityData activityData = optionalActivityData.get();
+        ActivityData activityData = getActivities();
+        if (activityData != null) {
             for (Activity activity : activityData.getTimeEntryActivities()) {
                 activities.put(activity.getName(), activity.getId());
                 if (activity.isDefault()) {
@@ -54,7 +53,7 @@ public class RedmineActivityService implements ActivityService {
             }
             log.info(MAPPED_ACTIVITIES_MESSAGE);
         } else {
-            log.warn(COULDNT_MAP_MESSAGE);
+            log.error(COULDNT_MAP_MESSAGE);
         }
     }
 }

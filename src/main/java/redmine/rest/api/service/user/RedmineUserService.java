@@ -42,15 +42,14 @@ public class RedmineUserService implements UserService {
         }
     }
 
-    private Optional<UserData> getUsers() {
-        return Optional.of(restTemplate.getForObject(url, UserData.class));
+    private UserData getUsers() {
+        return restTemplate.getForObject(url, UserData.class);
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllUsers() {
-        Optional<UserData> optionalUserData = getUsers();
-        if (optionalUserData.isPresent()) {
-            UserData userData = optionalUserData.get();
+        UserData userData = getUsers();
+        if (userData != null) {
             for (User user : userData.getUsers()) {
                 users.put(getFirstnameAndLastname(user), user.getId());
             }
