@@ -15,8 +15,8 @@ public class RestTemplateConfig {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
-                                     @Value("${redmine_logger_username}") String username,
-                                     @Value("${redmine_logger_password}") String password) {
+                                     @Value("${redmine.logger.username}") String username,
+                                     @Value("${redmine.logger.password}") String password) {
         RestTemplate template = restTemplateBuilder.build();
         template.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         template.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter());

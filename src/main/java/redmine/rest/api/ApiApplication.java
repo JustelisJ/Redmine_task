@@ -25,7 +25,7 @@ public class ApiApplication {
     }
 
     @Bean
-    CommandLineRunner runner(TimeEntryService entryService, @Value("${data_url}") String dataUrl) {
+    CommandLineRunner runner(TimeEntryService entryService, @Value("${data.url}") String dataUrl) {
         return args -> {
             // read json and post on service
             ObjectMapper mapper = new ObjectMapper();
