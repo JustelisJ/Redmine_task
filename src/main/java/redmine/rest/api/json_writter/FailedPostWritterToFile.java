@@ -1,4 +1,4 @@
-package redmine.rest.api.jsonWritter;
+package redmine.rest.api.json_writter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @NoArgsConstructor
@@ -19,29 +19,30 @@ public class FailedPostWritterToFile {
 
     public void logWrongJSONToFile(JiraWorkLog workLog, Exception e) {
         File incorrectJSONFile = new File(getResourcesAbsolutePath());
-        try {
+
+        try (FileWriter writer = new FileWriter(incorrectJSONFile, true)) {
             if (incorrectJSONFile.createNewFile()) {
                 initializeIncorrectJSONFile(incorrectJSONFile);
                 log.info("Incorrent JSON object file is created");
             }
-            FileWriter writer = new FileWriter(incorrectJSONFile, true);
+
             String json = createWorkLogJSONWithErrorParameter(workLog, e);
             writer.write(json + "\n]");
             writer.flush();
-            writer.close();
+
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
-    public void logWrongJSONToFile(ArrayList<JiraWorkLog> workLogs, ArrayList<Exception> e) {
+    public void logWrongJSONToFile(List<JiraWorkLog> workLogs, List<Exception> e) {
         File incorrectJSONFile = new File(getResourcesAbsolutePath());
-        try {
+
+        try (FileWriter writer = new FileWriter(incorrectJSONFile, true)) {
             if (incorrectJSONFile.createNewFile()) {
                 initializeIncorrectJSONFile(incorrectJSONFile);
                 log.info("Incorrent JSON object file is created");
             }
-            FileWriter writer = new FileWriter(incorrectJSONFile, true);
             for (int i = 0; i < workLogs.size(); i++) {
                 String json = createWorkLogJSONWithErrorParameter(workLogs.get(i), e.get(i));
                 if (i != workLogs.size() - 1) {
@@ -49,9 +50,8 @@ public class FailedPostWritterToFile {
                 } else {
                     writer.write(json + "\n]\n}");
                 }
-                writer.flush();
             }
-            writer.close();
+            writer.flush();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -61,16 +61,13 @@ public class FailedPostWritterToFile {
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
         File currentDirFile = new File("");
         String helper = currentDirFile.getAbsolutePath();
-        String currentDir = helper + "/src/main/resources/json/incorrect_" + timeStamp + ".json";
-        return currentDir;
+        return helper + "/src/main/resources/json/incorrect_" + timeStamp + ".json";
     }
 
     private void initializeIncorrectJSONFile(File file) {
-        try {
-            FileWriter writer = new FileWriter(file);
+        try (FileWriter writer = new FileWriter(file)) {
             writer.write("{\n\"results\": [\n");
             writer.flush();
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

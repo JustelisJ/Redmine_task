@@ -1,4 +1,4 @@
-package redmine.rest.api.model.redmineData;
+package redmine.rest.api.model.redmine_data;
 
 import lombok.Data;
 import redmine.rest.api.model.Issue;

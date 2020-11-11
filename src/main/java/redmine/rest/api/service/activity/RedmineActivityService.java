@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.model.Activity;
-import redmine.rest.api.model.redmineData.ActivityData;
+import redmine.rest.api.model.redmine_data.ActivityData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +16,11 @@ import java.util.Optional;
 @Service
 public class RedmineActivityService implements ActivityService {
 
+    private static final String COULDNT_MAP_MESSAGE = "Couldn't map activities";
+    private static final String MAPPED_ACTIVITIES_MESSAGE = "Mapped all activities";
+
     private final String url;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private Map<String, Long> activities;
 
     public RedmineActivityService(RestTemplate restTemplate,
@@ -34,19 +37,24 @@ public class RedmineActivityService implements ActivityService {
         return Optional.of(id);
     }
 
-    private ActivityData getActivities() {
-        return restTemplate.getForObject(url, ActivityData.class);
+    private Optional<ActivityData> getActivities() {
+        return Optional.of(restTemplate.getForObject(url, ActivityData.class));
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllActivities() {
-        ActivityData activityData = getActivities();
-        for (Activity activity : activityData.getTime_entry_activities()) {
-            activities.put(activity.getName(), activity.getId());
-            if (activity.is_default()) {
-                activities.put("default", activity.getId());
+        Optional<ActivityData> optionalActivityData = getActivities();
+        if (optionalActivityData.isPresent()) {
+            ActivityData activityData = optionalActivityData.get();
+            for (Activity activity : activityData.getTimeEntryActivities()) {
+                activities.put(activity.getName(), activity.getId());
+                if (activity.isDefault()) {
+                    activities.put("default", activity.getId());
+                }
             }
+            log.info(MAPPED_ACTIVITIES_MESSAGE);
+        } else {
+            log.warn(COULDNT_MAP_MESSAGE);
         }
-        log.info("Mapped all activities");
     }
 }

@@ -15,7 +15,7 @@ public class Activity {
     private Long id;
     private String name;
     @JsonAlias({"is_default"})
-    private boolean is_default;
+    private boolean isDefault;
     private boolean active;
 
 }

@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.exception.NoUserFoundException;
+import redmine.rest.api.exception.UserNotFoundException;
 import redmine.rest.api.model.User;
-import redmine.rest.api.model.redmineData.UserData;
+import redmine.rest.api.model.redmine_data.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +17,11 @@ import java.util.Optional;
 @Service
 public class RedmineUserService implements UserService {
 
+    private static final String MAPPED_USERS_MESSAGE = "Mapped all users";
+    private static final String COULDNT_MAP_MESSAGE = "Couldn't map users";
+
     private final String url;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private Map<String, Long> users;
 
     public RedmineUserService(RestTemplate restTemplate,
@@ -30,26 +33,31 @@ public class RedmineUserService implements UserService {
     }
 
     @Override
-    public Optional<Long> findUserIdByName(String name) throws NoUserFoundException {
+    public Optional<Long> findUserIdByName(String name) {
         Long id = users.getOrDefault(name, null);
         if (id == null) {
-            throw new NoUserFoundException();
+            throw new UserNotFoundException();
         } else {
             return Optional.of(id);
         }
     }
 
-    private UserData getUsers() {
-        return restTemplate.getForObject(url, UserData.class);
+    private Optional<UserData> getUsers() {
+        return Optional.of(restTemplate.getForObject(url, UserData.class));
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllUsers() {
-        UserData userData = getUsers();
-        for (User user : userData.getUsers()) {
-            users.put(getFirstnameAndLastname(user), user.getId());
+        Optional<UserData> optionalUserData = getUsers();
+        if (optionalUserData.isPresent()) {
+            UserData userData = optionalUserData.get();
+            for (User user : userData.getUsers()) {
+                users.put(getFirstnameAndLastname(user), user.getId());
+            }
+            log.info(MAPPED_USERS_MESSAGE);
+        } else {
+            log.warn(COULDNT_MAP_MESSAGE);
         }
-        log.info("Mapped all users");
     }
 
     private String getFirstnameAndLastname(User user) {

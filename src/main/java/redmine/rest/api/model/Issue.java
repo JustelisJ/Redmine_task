@@ -22,14 +22,21 @@ public class Issue {
     private User author;
     private String subject;
     private String description;
-    private Date start_date;
-    private Date due_date;
-    private int done_ratio;
+    @JsonAlias("start_date")
+    private Date startDate;
+    @JsonAlias("due_date")
+    private Date dueDate;
+    @JsonAlias("done_ratio")
+    private int doneRatio;
     @JsonAlias("is_private")
-    private boolean is_private;
-    private double estimated_hours;
-    private Date created_on;
-    private Date updated_on;
-    private Date closed_on;
+    private boolean isPrivate;
+    @JsonAlias("estimated_hours")
+    private double estimatedHours;
+    @JsonAlias("created_on")
+    private Date createdOn;
+    @JsonAlias("updated_on")
+    private Date updatedOn;
+    @JsonAlias("closed_on")
+    private Date closedOn;
 
 }

@@ -23,9 +23,8 @@
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table class="table table-hover ">
+                        <table class="table table-hover">
                             <thead class="thead-inverse">
-                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmineData.TimeEntryData"*/-->
                             <tr>
                                 <th>Project</th>
                                 <th>User</th>
@@ -36,16 +35,16 @@
                                 <th>Updated on</th>
                             </tr>
                             </thead>
-                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmineData.TimeEntryData"*/-->
-                            <tr th:each="entry : ${timeEntries.getTime_entries()}">
+                            <!--/*@thymesVar id="timeEntries" type="redmine.rest.api.model.redmine_data.TimeEntryData"*/-->
+                            <tr th:each="entry : ${timeEntries.getTimeEntries()}">
                                 <!--/*@thymesVar id="entry" type="redmine.rest.api.model.TimeEntry"*/-->
                                 <td th:text="${entry.project.name}">Project name</td>
                                 <td th:text="${entry.user.firstname}">User name</td>
                                 <td th:text="${entry.activity.name}">Activity name</td>
                                 <td th:text="${entry.hours}">Hours</td>
                                 <td th:text="${entry.comments}">Comment</td>
-                                <td th:text="${entry.spent_on}">Spent on</td>
-                                <td th:text="${entry.updated_on}">Updated on</td>
+                                <td th:text="${entry.getSpentOn()}">Spent on</td>
+                                <td th:text="${entry.getUpdatedOn()}">Updated on</td>
                             </tr>
                         </table>
                     </div>

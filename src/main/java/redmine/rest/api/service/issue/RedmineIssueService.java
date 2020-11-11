@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.exception.NoIssueFoundException;
+import redmine.rest.api.exception.IssueNotFoundException;
 import redmine.rest.api.model.Issue;
-import redmine.rest.api.model.redmineData.IssueData;
+import redmine.rest.api.model.redmine_data.IssueData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +17,11 @@ import java.util.Optional;
 @Service
 public class RedmineIssueService implements IssueService {
 
+    private static final String MAPPED_ISSUES_MESSAGE = "Mapped all issues";
+    private static final String COULDNT_MAP_MESSAGE = "Couldn't map issues";
+
     private final String url;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     private Map<String, Long> issues;
 
     public RedmineIssueService(RestTemplate restTemplate,
@@ -30,25 +33,30 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Optional<Long> getIssueIdFromName(String name) throws NoIssueFoundException {
+    public Optional<Long> getIssueIdFromName(String name) {
         Long id = issues.getOrDefault(name, null);
         if (id == null) {
-            throw new NoIssueFoundException();
+            throw new IssueNotFoundException();
         } else {
             return Optional.of(id);
         }
     }
 
-    private IssueData getIssues() {
-        return restTemplate.getForObject(url, IssueData.class);
+    private Optional<IssueData> getIssues() {
+        return Optional.of(restTemplate.getForObject(url, IssueData.class));
     }
 
     @Scheduled(fixedRate = 300000)
     private void mapAllIssues() {
-        IssueData issueData = getIssues();
-        for (Issue issue : issueData.getIssues()) {
-            issues.put(issue.getSubject(), issue.getId());
+        Optional<IssueData> optionalIssueData = getIssues();
+        if (optionalIssueData.isPresent()) {
+            IssueData issueData = optionalIssueData.get();
+            for (Issue issue : issueData.getIssues()) {
+                issues.put(issue.getSubject(), issue.getId());
+            }
+            log.info(MAPPED_ISSUES_MESSAGE);
+        } else {
+            log.warn(COULDNT_MAP_MESSAGE);
         }
-        log.info("Mapped all issues");
     }
 }

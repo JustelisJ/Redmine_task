@@ -1,9 +1,9 @@
-package redmine.rest.api.service.timeEntry;
+package redmine.rest.api.service.time_entry;
 
 import redmine.rest.api.model.TimeEntry;
 import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
-import redmine.rest.api.model.redmineData.TimeEntryData;
+import redmine.rest.api.model.redmine_data.TimeEntryData;
 
 import java.util.ArrayList;
 import java.util.Optional;

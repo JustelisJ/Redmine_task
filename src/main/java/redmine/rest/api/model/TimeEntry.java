@@ -1,5 +1,6 @@
 package redmine.rest.api.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +24,11 @@ public class TimeEntry {
     private Activity activity;
     private double hours;
     private String comments;
-    private Date spent_on;
-    private Date created_on;
-    private Date updated_on;
+    @JsonAlias("spent_on")
+    private Date spentOn;
+    @JsonAlias("created_on")
+    private Date createdOn;
+    @JsonAlias("updated_on")
+    private Date updatedOn;
 
 }

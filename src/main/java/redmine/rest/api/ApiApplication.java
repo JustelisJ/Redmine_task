@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import redmine.rest.api.model.jira.JiraPackage;
-import redmine.rest.api.service.timeEntry.TimeEntryService;
+import redmine.rest.api.service.time_entry.TimeEntryService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +25,13 @@ public class ApiApplication {
     }
 
     @Bean
-    CommandLineRunner runner(TimeEntryService entryService, @Value("${data_url}") String data_url) {
+    CommandLineRunner runner(TimeEntryService entryService, @Value("${data_url}") String dataUrl) {
         return args -> {
             // read json and post on service
             ObjectMapper mapper = new ObjectMapper();
             TypeReference<JiraPackage> typeReference = new TypeReference<>() {
             };
-            InputStream inputStream = TypeReference.class.getResourceAsStream(data_url);
+            InputStream inputStream = TypeReference.class.getResourceAsStream(dataUrl);
             try {
                 JiraPackage jiraPackage = mapper.readValue(inputStream, typeReference);
                 entryService.postJiraWorkLogs(jiraPackage);

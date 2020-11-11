@@ -1,4 +1,4 @@
-package redmine.rest.api.model.redmineData;
+package redmine.rest.api.model.redmine_data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

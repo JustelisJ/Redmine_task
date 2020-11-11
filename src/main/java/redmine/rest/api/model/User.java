@@ -21,7 +21,9 @@ public class User {
     private String firstname;
     private String lastname;
     private String mail;
-    private Date created_on;
-    private Date last_login_on;
+    @JsonAlias("created_on")
+    private Date createdOn;
+    @JsonAlias("last_login_on")
+    private Date lastLoginOn;
 
 }
