@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import redmine.rest.api.exception.UserNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -47,7 +47,9 @@ class RedmineUserServiceTest {
     @Test
     void dontFindUserIdByName() {
         when(userService.findUserIdByName(USER_FULL_NAME)).thenReturn(Optional.of(userId));
-        Optional<Long> id = userService.findUserIdByName(OTHER_USER_FULL_NAME);
-        assertTrue(id.isEmpty());
+        when(userService.findUserIdByName(OTHER_USER_FULL_NAME)).thenThrow(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class, () -> {
+            userService.findUserIdByName(OTHER_USER_FULL_NAME);
+        });
     }
 }

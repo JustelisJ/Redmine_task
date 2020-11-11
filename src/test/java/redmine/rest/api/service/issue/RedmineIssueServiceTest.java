@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import redmine.rest.api.exception.IssueNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -47,7 +47,9 @@ class RedmineIssueServiceTest {
     @Test
     void dontGetIssueIdFromName() {
         when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
-        Optional<Long> id = issueService.getIssueIdFromName(NP_3_ISSUE_NAME);
-        assertTrue(id.isEmpty());
+        when(issueService.getIssueIdFromName(NP_3_ISSUE_NAME)).thenThrow(IssueNotFoundException.class);
+        assertThrows(IssueNotFoundException.class, () -> {
+            issueService.getIssueIdFromName(NP_3_ISSUE_NAME);
+        });
     }
 }
