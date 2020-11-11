@@ -17,14 +17,14 @@ import java.util.List;
 @NoArgsConstructor
 public class FailedPostWritterToFile {
 
+    private static final String FILE_CREATION_MESSAGE = "Incorrent JSON object file is created";
+
     public void logWrongJSONToFile(JiraWorkLog workLog, Exception e) {
         File incorrectJSONFile = new File(getResourcesAbsolutePath());
 
         try (FileWriter writer = new FileWriter(incorrectJSONFile, true)) {
-            if (incorrectJSONFile.createNewFile()) {
-                initializeIncorrectJSONFile(incorrectJSONFile);
-                log.info("Incorrent JSON object file is created");
-            }
+            initializeIncorrectJSONFile(incorrectJSONFile);
+            log.info(FILE_CREATION_MESSAGE);
 
             String json = createWorkLogJSONWithErrorParameter(workLog, e);
             writer.write(json + "\n]");
@@ -39,7 +39,7 @@ public class FailedPostWritterToFile {
         File incorrectJSONFile = new File(getResourcesAbsolutePath());
 
         try (FileWriter writer = new FileWriter(incorrectJSONFile, true)) {
-            log.info("Incorrent JSON object file is created");
+            log.info(FILE_CREATION_MESSAGE);
             initializeIncorrectJSONFile(incorrectJSONFile);
             for (int i = 0; i < workLogs.size(); i++) {
                 String json = createWorkLogJSONWithErrorParameter(workLogs.get(i), e.get(i));
