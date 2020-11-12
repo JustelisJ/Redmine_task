@@ -1,7 +1,9 @@
 package redmine.rest.api.service.issue;
 
+import java.util.Optional;
+
 public interface IssueService {
 
-    Long getIssueIdFromName(String name);
+    Optional<Long> getIssueIdFromName(String name);
 
 }

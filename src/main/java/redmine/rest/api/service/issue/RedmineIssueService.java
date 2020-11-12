@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.exception.IssueNotFoundException;
 import redmine.rest.api.model.Issue;
 import redmine.rest.api.model.redminedata.IssueData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -32,10 +32,8 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Long getIssueIdFromName(String name) {
-        return issues.computeIfAbsent(name, s -> {
-            throw new IssueNotFoundException();
-        });
+    public Optional<Long> getIssueIdFromName(String name) {
+        return Optional.ofNullable(issues.get(name));
     }
 
     private IssueData getIssues() {

@@ -9,6 +9,6 @@ import redmine.rest.api.model.jira.JiraWorkLog;
 public class FailedPost {
 
     JiraWorkLog workLog;
-    Exception exception;
+    String exception;
 
 }

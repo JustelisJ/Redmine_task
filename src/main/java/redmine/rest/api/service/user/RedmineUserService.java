@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redmine.rest.api.exception.UserNotFoundException;
 import redmine.rest.api.model.User;
 import redmine.rest.api.model.redminedata.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -32,10 +32,8 @@ public class RedmineUserService implements UserService {
     }
 
     @Override
-    public Long findUserIdByName(String name) {
-        return users.computeIfAbsent(name, s -> {
-            throw new UserNotFoundException();
-        });
+    public Optional<Long> findUserIdByName(String name) {
+        return Optional.ofNullable(users.get(name));
     }
 
     private UserData getUsers() {

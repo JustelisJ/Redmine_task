@@ -1,14 +1,16 @@
 package redmine.rest.api.service.issue;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import redmine.rest.api.exception.IssueNotFoundException;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -35,19 +37,21 @@ class RedmineIssueServiceTest {
         initializeData();
     }
 
+    @SneakyThrows
     @Test
     void getIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(issueId);
-        Long id = issueService.getIssueIdFromName(NP_1_ISSUE_NAME);
-        assertEquals(issueId, id);
+        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
+        Optional<Long> id = issueService.getIssueIdFromName(NP_1_ISSUE_NAME);
+        assertTrue(id.isPresent());
+        assertEquals(issueId, id.get());
     }
 
+    @SneakyThrows
     @Test
     void dontGetIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(issueId);
-        when(issueService.getIssueIdFromName(NP_3_ISSUE_NAME)).thenThrow(IssueNotFoundException.class);
-        assertThrows(IssueNotFoundException.class, () -> {
-            issueService.getIssueIdFromName(NP_3_ISSUE_NAME);
-        });
+        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
+        when(issueService.getIssueIdFromName(NP_3_ISSUE_NAME)).thenReturn(Optional.empty());
+        Optional<Long> id = issueService.getIssueIdFromName(NP_3_ISSUE_NAME);
+        assertTrue(id.isEmpty());
     }
 }
