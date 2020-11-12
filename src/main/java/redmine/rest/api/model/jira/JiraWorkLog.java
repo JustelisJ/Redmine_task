@@ -1,5 +1,6 @@
 package redmine.rest.api.model.jira;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.ToString;
 
@@ -7,6 +8,8 @@ import java.util.Date;
 
 @Data
 @ToString
+@JsonIgnoreProperties({"self", "metadata", "tempoWorklogId", "jiraWorklogId", "billableSeconds", "startTime",
+        "createdAt", "updatedAt", "attributes"})
 public class JiraWorkLog {
 
     private JiraIssue issue;
