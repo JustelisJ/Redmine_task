@@ -6,10 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,21 +38,19 @@ class RedmineActivityServiceTest {
 
     @Test
     void findActivityFromName() {
-        when(activityService.findActivityFromName(any())).thenReturn(Optional.of(default_id));
-        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(Optional.of(documentationId));
+        when(activityService.findActivityFromName(any())).thenReturn(default_id);
+        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(documentationId);
 
-        Optional<Long> id = activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME);
-        assertTrue(id.isPresent());
-        assertEquals(documentationId, id.get());
+        Long id = activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME);
+        assertEquals(documentationId, id);
     }
 
     @Test
     void dontFindActivityFromName() {
-        when(activityService.findActivityFromName(any())).thenReturn(Optional.of(default_id));
-        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(Optional.of(documentationId));
+        when(activityService.findActivityFromName(any())).thenReturn(default_id);
+        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(documentationId);
 
-        Optional<Long> id = activityService.findActivityFromName(SOME_OTHER_ACTIVITY_NAME);
-        assertTrue(id.isPresent());
-        assertEquals(default_id, id.get());
+        Long id = activityService.findActivityFromName(SOME_OTHER_ACTIVITY_NAME);
+        assertEquals(default_id, id);
     }
 }

@@ -10,7 +10,6 @@ import redmine.rest.api.model.redminedata.ActivityData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @Service
@@ -32,9 +31,8 @@ public class RedmineActivityService implements ActivityService {
     }
 
     @Override
-    public Optional<Long> findActivityFromName(String name) {
-        Long id = activities.getOrDefault(name, activities.get("default"));
-        return Optional.of(id);
+    public Long findActivityFromName(String name) {
+        return activities.getOrDefault(name, activities.get("default"));
     }
 
     private ActivityData getActivities() {

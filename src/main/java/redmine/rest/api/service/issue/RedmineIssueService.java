@@ -11,7 +11,6 @@ import redmine.rest.api.model.redminedata.IssueData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @Service
@@ -33,13 +32,10 @@ public class RedmineIssueService implements IssueService {
     }
 
     @Override
-    public Optional<Long> getIssueIdFromName(String name) {
-        Long id = issues.getOrDefault(name, null);
-        if (id == null) {
+    public Long getIssueIdFromName(String name) {
+        return issues.computeIfAbsent(name, s -> {
             throw new IssueNotFoundException();
-        } else {
-            return Optional.of(id);
-        }
+        });
     }
 
     private IssueData getIssues() {

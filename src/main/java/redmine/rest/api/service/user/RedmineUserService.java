@@ -11,7 +11,6 @@ import redmine.rest.api.model.redminedata.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @Service
@@ -33,13 +32,10 @@ public class RedmineUserService implements UserService {
     }
 
     @Override
-    public Optional<Long> findUserIdByName(String name) {
-        Long id = users.getOrDefault(name, null);
-        if (id == null) {
+    public Long findUserIdByName(String name) {
+        return users.computeIfAbsent(name, s -> {
             throw new UserNotFoundException();
-        } else {
-            return Optional.of(id);
-        }
+        });
     }
 
     private UserData getUsers() {

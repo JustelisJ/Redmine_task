@@ -5,7 +5,7 @@ import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redminedata.TimeEntryData;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public interface TimeEntryService {
@@ -14,6 +14,6 @@ public interface TimeEntryService {
 
     Optional<TimeEntry> postJiraWorkLog(JiraWorkLog timeEntry);
 
-    Optional<ArrayList<TimeEntry>> postJiraWorkLogs(JiraPackage jiraPackage);
+    List<TimeEntry> postJiraWorkLogs(JiraPackage jiraPackage);
 
 }

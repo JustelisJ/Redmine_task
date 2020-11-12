@@ -89,15 +89,14 @@ class RedmineTimeEntryServiceTest {
 
     @Test
     void postTimeEntries() {
-        when(entryService.postJiraWorkLogs(any())).thenReturn(Optional.of(responseData2));
+        when(entryService.postJiraWorkLogs(any())).thenReturn(responseData2);
 
-        Optional<ArrayList<TimeEntry>> returnedPost =
+        List<TimeEntry> returnedPost =
                 entryService.postJiraWorkLogs(new JiraPackage());
 
         assertNotNull(returnedPost);
-        assertTrue(returnedPost.isPresent());
-        assertEquals(responseData2, returnedPost.get());
-        assertEquals(TIME_ENTRY_FIRSTNAME, returnedPost.get().get(0).getUser().getFirstname());
+        assertEquals(responseData2, returnedPost);
+        assertEquals(TIME_ENTRY_FIRSTNAME, returnedPost.get(0).getUser().getFirstname());
         verify(entryService).postJiraWorkLogs(any());
     }
 }

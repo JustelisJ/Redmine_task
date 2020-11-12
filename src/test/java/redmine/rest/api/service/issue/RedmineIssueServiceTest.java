@@ -7,9 +7,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import redmine.rest.api.exception.IssueNotFoundException;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -38,15 +37,14 @@ class RedmineIssueServiceTest {
 
     @Test
     void getIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
-        Optional<Long> id = issueService.getIssueIdFromName(NP_1_ISSUE_NAME);
-        assertTrue(id.isPresent());
-        assertEquals(issueId, id.get());
+        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(issueId);
+        Long id = issueService.getIssueIdFromName(NP_1_ISSUE_NAME);
+        assertEquals(issueId, id);
     }
 
     @Test
     void dontGetIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
+        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(issueId);
         when(issueService.getIssueIdFromName(NP_3_ISSUE_NAME)).thenThrow(IssueNotFoundException.class);
         assertThrows(IssueNotFoundException.class, () -> {
             issueService.getIssueIdFromName(NP_3_ISSUE_NAME);

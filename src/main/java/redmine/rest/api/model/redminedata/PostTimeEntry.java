@@ -26,7 +26,7 @@ public class PostTimeEntry {
     private String comments;
     @JsonAlias("activity_id")
     private Long activityId;
-    @JsonFormat(pattern = "yyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonAlias("spent_on")
     private Date spentOn;
 
