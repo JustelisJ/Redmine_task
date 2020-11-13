@@ -1,7 +1,6 @@
 package redmine.rest.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,23 +15,18 @@ public class RestTemplateConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
                                      @Value("${redmine.logger.username}") String username,
-                                     @Value("${redmine.logger.password}") String password) {
+                                     @Value("${redmine.logger.password}") String password,
+                                     ObjectMapper mapper) {
         RestTemplate template = restTemplateBuilder.build();
         template.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-        template.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter());
+        template.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter(mapper));
         return template;
     }
 
-    private MappingJackson2HttpMessageConverter createMappingJacksonHttpMessageConverter() {
+    private MappingJackson2HttpMessageConverter createMappingJacksonHttpMessageConverter(ObjectMapper mapper) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(createObjectMapper());
+        converter.setObjectMapper(mapper);
         return converter;
-    }
-
-    private ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
-        return mapper;
     }
 
 }

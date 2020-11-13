@@ -1,6 +1,5 @@
 package redmine.rest.api.model.redminedata;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,6 @@ import java.util.List;
 @Builder
 public class TimeEntryData extends Metadata {
 
-    @JsonAlias("time_entries")
     private List<TimeEntry> timeEntries;
 
 }

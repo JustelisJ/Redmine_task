@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-@JsonIgnoreProperties({"self", "metadata"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JiraPackage {
 
     @JsonProperty("results")

@@ -36,6 +36,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
     private final RestTemplate restTemplate;
     private final FailedPostWriterToFile writter;
 
+
     public RedmineTimeEntryService(RestTemplate restTemplate,
                                    @Value("${redmine.url}") String url,
                                    IssueService issueService,
@@ -58,7 +59,10 @@ public class RedmineTimeEntryService implements TimeEntryService {
     public Optional<TimeEntry> postJiraWorkLog(JiraWorkLog jiraWorkLog) {
         try {
             PostTimeEntry timeEntry = createTimeEntry(jiraWorkLog);
-            return Optional.ofNullable(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
+            Optional<TimeEntry> returnOptional = Optional.ofNullable(
+                    restTemplate.postForObject(url, timeEntry, TimeEntry.class));
+            log.info("Posted work log");
+            return returnOptional;
         } catch (Exception e) {
             log.error(e.getMessage());
             writter.logWrongJSONToFile(new FailedPost(jiraWorkLog, e.getMessage()));
@@ -69,12 +73,14 @@ public class RedmineTimeEntryService implements TimeEntryService {
 
     @Override
     public List<TimeEntry> postJiraWorkLogs(JiraPackage jiraPackage) {
+        int count = 0;
         ArrayList<TimeEntry> postedEntries = new ArrayList<>();
         ArrayList<FailedPost> failedPosts = new ArrayList<>();
         for (JiraWorkLog workLog : jiraPackage.getWorkLogs()) {
             try {
                 PostTimeEntry timeEntry = createTimeEntry(workLog);
                 postedEntries.add(restTemplate.postForObject(url, timeEntry, TimeEntry.class));
+                count++;
             } catch (Exception e) {
                 log.error(e.getMessage());
                 failedPosts.add(new FailedPost(workLog, e.getMessage()));
@@ -83,6 +89,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
         if (!failedPosts.isEmpty()) {
             writter.logWrongJSONToFile(failedPosts);
         }
+        log.info("Posted " + count + " work logs, out of " + jiraPackage.getWorkLogs().size());
         return postedEntries;
     }
 

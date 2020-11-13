@@ -8,8 +8,7 @@ import java.util.Date;
 
 @Data
 @ToString
-@JsonIgnoreProperties({"self", "metadata", "tempoWorklogId", "jiraWorklogId", "billableSeconds", "startTime",
-        "createdAt", "updatedAt", "attributes"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JiraWorkLog {
 
     private JiraIssue issue;

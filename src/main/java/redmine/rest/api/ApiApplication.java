@@ -35,9 +35,9 @@ public class ApiApplication {
             try {
                 JiraPackage jiraPackage = mapper.readValue(inputStream, typeReference);
                 entryService.postJiraWorkLogs(jiraPackage);
-                log.info("Users Saved!");
+                log.info("Work logs Saved!");
             } catch (IOException e) {
-                log.error("Unable to save users: " + e.getMessage());
+                log.error("Unable to save work logs: " + e.getMessage());
             }
         };
     }

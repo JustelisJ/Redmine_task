@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,13 +17,11 @@ public class User {
     private Long id;
     private String login;
     private boolean admin;
-    @JsonAlias({"firstname", "name"})
+    @JsonAlias({"name"})
     private String firstname;
     private String lastname;
     private String mail;
-    @JsonAlias("created_on")
-    private Date createdOn;
-    @JsonAlias("last_login_on")
-    private Date lastLoginOn;
+    private LocalDate createdOn;
+    private LocalDate lastLoginOn;
 
 }
