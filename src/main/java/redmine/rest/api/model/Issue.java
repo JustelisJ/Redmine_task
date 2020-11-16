@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,13 +21,13 @@ public class Issue {
     private User author;
     private String subject;
     private String description;
-    private Date startDate;
-    private Date dueDate;
+    private LocalDate startDate;
+    private LocalDate dueDate;
     private int doneRatio;
     private boolean isPrivate;
     private double estimatedHours;
-    private Date createdOn;
-    private Date updatedOn;
-    private Date closedOn;
+    private LocalDate createdOn;
+    private LocalDate updatedOn;
+    private LocalDate closedOn;
 
 }

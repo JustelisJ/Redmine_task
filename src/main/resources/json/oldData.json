@@ -1,0 +1,91 @@
+{
+  "self": "https://api.tempo.io/core/3/worklogs?offset=0&limit=50",
+  "metadata": {
+    "count": 3,
+    "offset": 0,
+    "limit": 50
+  },
+  "results": [
+    {
+      "self": "https://api.tempo.io/core/3/worklogs/10",
+      "tempoWorklogId": 10,
+      "jiraWorklogId": 10008,
+      "issue": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/issue/NP-1",
+        "key": "NP-1",
+        "id": 10002
+      },
+      "timeSpentSeconds": 3600,
+      "billableSeconds": 3600,
+      "startDate": "2020-10-26",
+      "startTime": "10:00:00",
+      "description": "Did something",
+      "createdAt": "2020-10-30T08:06:20Z",
+      "updatedAt": "2020-10-30T08:06:20Z",
+      "author": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/user?accountId=5f96b2f4b45b2e00743158c1",
+        "accountId": "5f96b2f4b45b2e00743158c1",
+        "displayName": "Redas Rimkus"
+      },
+      "attributes": {
+        "self": "https://api.tempo.io/core/3/worklogs/10/work-attribute-values",
+        "values": [
+        ]
+      }
+    },
+    {
+      "self": "https://api.tempo.io/core/3/worklogs/11",
+      "tempoWorklogId": 11,
+      "jiraWorklogId": 10009,
+      "issue": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/issue/NP-2",
+        "key": "NP-2",
+        "id": 10005
+      },
+      "timeSpentSeconds": 7200,
+      "billableSeconds": 7200,
+      "startDate": "2020-10-27",
+      "startTime": "10:00:00",
+      "description": "Testing",
+      "createdAt": "2020-10-30T08:07:29Z",
+      "updatedAt": "2020-10-30T08:07:29Z",
+      "author": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/user?accountId=5f96b2f4b45b2e00743158c1",
+        "accountId": "5f96b2f4b45b2e00743158c1",
+        "displayName": "Redas Rimkus"
+      },
+      "attributes": {
+        "self": "https://api.tempo.io/core/3/worklogs/11/work-attribute-values",
+        "values": [
+        ]
+      }
+    },
+    {
+      "self": "https://api.tempo.io/core/3/worklogs/12",
+      "tempoWorklogId": 12,
+      "jiraWorklogId": 10010,
+      "issue": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/issue/NP-2",
+        "key": "NP-2",
+        "id": 10005
+      },
+      "timeSpentSeconds": 12600,
+      "billableSeconds": 12600,
+      "startDate": "2020-10-28",
+      "startTime": "10:00:00",
+      "description": "Testing",
+      "createdAt": "2020-10-30T08:08:15Z",
+      "updatedAt": "2020-10-30T08:08:15Z",
+      "author": {
+        "self": "https://redasrimkus.atlassian.net/rest/api/2/user?accountId=5f96b2f4b45b2e00743158c1",
+        "accountId": "5f96b2f4b45b2e00743158c1",
+        "displayName": "Redas Rimkus"
+      },
+      "attributes": {
+        "self": "https://api.tempo.io/core/3/worklogs/12/work-attribute-values",
+        "values": [
+        ]
+      }
+    }
+  ]
+}

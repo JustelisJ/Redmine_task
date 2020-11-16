@@ -94,17 +94,12 @@ public class RedmineTimeEntryService implements TimeEntryService {
     }
 
     private PostTimeEntry createTimeEntry(JiraWorkLog jiraWorkLog) throws IssueNotFoundException, UserNotFoundException {
-        Optional<Long> issueId = issueService.getIssueIdFromName(jiraWorkLog.getIssue().getKey());
-        Optional<Long> userId = userService.findUserIdByName(jiraWorkLog.getAuthor().getDisplayName());
-        if (issueId.isEmpty()) {
-            throw new IssueNotFoundException(jiraWorkLog.getIssue().getKey());
-        }
-        if (userId.isEmpty()) {
-            throw new UserNotFoundException(jiraWorkLog.getAuthor().getDisplayName());
-        }
+        Optional<Long> issueId = issueService.getIssueIdFromName(jiraWorkLog.getIssueId());
+        Optional<Long> userId = userService.findUserIdByName(jiraWorkLog.getAccountId());
+
         return PostTimeEntry.builder()
-                .issueId(issueId.get())
-                .userId(userId.get())
+                .issueId(issueId.orElseThrow(IssueNotFoundException::new))
+                .userId(userId.orElseThrow(UserNotFoundException::new))
                 .hours(secondsToHoursConverter(jiraWorkLog.getTimeSpentSeconds()))
                 .comments(jiraWorkLog.getDescription())
                 .activityId(activityService.findActivityFromName(jiraWorkLog.getDescription()))

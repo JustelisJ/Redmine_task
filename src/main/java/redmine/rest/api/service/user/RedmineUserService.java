@@ -28,6 +28,11 @@ public class RedmineUserService implements UserService {
         this.restTemplate = restTemplate;
         this.url = url + "/users.json";
         users = new HashMap<>();
+
+        //temp---
+        users.put("5f9a8e6762584c006be3447c", 5L);
+        //------
+
         mapAllUsers();
     }
 
