@@ -3,94 +3,136 @@ package redmine.rest.api.service.timeentry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import redmine.rest.api.model.Activity;
-import redmine.rest.api.model.Issue;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.client.RestTemplate;
+import redmine.rest.api.config.RestTemplateConfig;
+import redmine.rest.api.exception.IssueNotFoundException;
+import redmine.rest.api.exception.UserNotFoundException;
 import redmine.rest.api.model.TimeEntry;
-import redmine.rest.api.model.User;
 import redmine.rest.api.model.jira.JiraPackage;
 import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redminedata.TimeEntryData;
+import redmine.rest.api.service.activity.ActivityService;
+import redmine.rest.api.service.issue.IssueService;
+import redmine.rest.api.service.user.UserService;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Import(RestTemplateConfig.class)
 @SpringBootTest
 class RedmineTimeEntryServiceTest {
 
-    private static final String TIME_ENTRY_FIRSTNAME = "Baubas";
-    private static final String TIME_ENTRY_COMMENT = "hehe";
-    private static final int TIME_ENTRY_DATA_SIZE = 2;
+    private static final long ISSUE_ID = 3L;
+    private static final long USER_ID = 7L;
+    private static final long ACTIVITY_ID = 6L;
 
-    @InjectMocks
+    @Mock
+    IssueService issueService;
+    @Mock
+    UserService userService;
+    @Mock
+    ActivityService activityService;
+    @Autowired
+    RestTemplate restTemplate;
+
     TimeEntryService entryService;
 
-    TimeEntryData data;
-    TimeEntry responseData;
-    ArrayList<TimeEntry> responseData2;
+    JiraWorkLog workLog;
+    JiraPackage jiraPackage;
 
     private void initializeData() {
-        responseData = TimeEntry.builder()
-                .issue(Issue.builder().id(3L).build())
-                .user(User.builder().id(7L).firstname(TIME_ENTRY_FIRSTNAME).build())
-                .hours(2)
-                .comments(TIME_ENTRY_COMMENT)
-                .activity(Activity.builder().id(6L).build())
-                .build();
-        ArrayList<TimeEntry> list = new ArrayList<>();
-        list.add(responseData);
-        responseData2 = list;
-        List<TimeEntry> timeEntries = new ArrayList<>();
-        timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(1L).hours(2).build());
-        timeEntries.add(redmine.rest.api.model.TimeEntry.builder().id(2L).hours(1).build());
-        data = TimeEntryData.builder().timeEntries(timeEntries).build();
+        initializeJiraWorkLog();
+
+        initializeJiraPackage();
+    }
+
+    private void initializeJiraPackage() {
+        Set<JiraWorkLog> workLogs = new HashSet<>();
+        workLogs.add(workLog);
+        jiraPackage = new JiraPackage();
+        jiraPackage.setWorkLogs(workLogs);
+    }
+
+    private void initializeJiraWorkLog() {
+        workLog = new JiraWorkLog();
+        workLog.setAccountId("asdasd");
+        workLog.setDescription("smth");
+        workLog.setIssueId("idk");
+        workLog.setStartDate("2020-10-31");
+        workLog.setTimeSpentSeconds(3600);
+        workLog.setProjectKey("null");
     }
 
     @BeforeEach
     void setUp() {
         initializeData();
+
+        entryService = new RedmineTimeEntryService(restTemplate,
+                issueService, userService, activityService);
     }
 
     @Test
     void getTimeEntries() {
         TimeEntryData returnedData = entryService.getTimeEntries();
 
-        assertEquals(TIME_ENTRY_DATA_SIZE, returnedData.getTimeEntries().size());
+        assertFalse(returnedData.getTimeEntries().isEmpty());
     }
 
     @Test
-    void postTimeEntry() {
-        when(entryService.postJiraWorkLog(any())).thenReturn(Optional.of(responseData));
+    void postJiraWorkLog() {
+        when_thenStatementsForPost();
 
         Optional<TimeEntry> returnedPost =
-                entryService.postJiraWorkLog(new JiraWorkLog());
+                entryService.postJiraWorkLog(workLog);
 
-        assertNotNull(returnedPost);
         assertTrue(returnedPost.isPresent());
-        assertEquals(responseData, returnedPost.get());
-        assertEquals(TIME_ENTRY_FIRSTNAME, returnedPost.get().getUser().getFirstname());
-        verify(entryService).postJiraWorkLog(any());
+        assertEquals(ACTIVITY_ID, returnedPost.get().getActivity().getId());
+    }
+
+    @Test
+    void postJiraWorkLogCantFindIssue() {
+        when(issueService.getIssueIdFromName(anyString())).thenThrow(IssueNotFoundException.class);
+
+        assertThrows(IssueNotFoundException.class, () -> {
+            entryService.postJiraWorkLog(workLog);
+        });
+    }
+
+    @Test
+    void postJiraWorkLogCantFindUser() {
+        when(userService.findUserIdByName(anyString())).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, () -> {
+            entryService.postJiraWorkLog(workLog);
+        });
     }
 
     @Test
     void postTimeEntries() {
-        when(entryService.postJiraWorkLogs(any())).thenReturn(responseData2);
+        when_thenStatementsForPost();
 
-        List<TimeEntry> returnedPost =
-                entryService.postJiraWorkLogs(new JiraPackage());
+        List<TimeEntry> returnedPosts =
+                entryService.postJiraWorkLogs(jiraPackage);
 
-        assertNotNull(returnedPost);
-        assertEquals(responseData2, returnedPost);
-        assertEquals(TIME_ENTRY_FIRSTNAME, returnedPost.get(0).getUser().getFirstname());
-        verify(entryService).postJiraWorkLogs(any());
+        assertFalse(returnedPosts.isEmpty());
+        assertEquals(ACTIVITY_ID, returnedPosts.get(0).getActivity().getId());
+    }
+
+    private void when_thenStatementsForPost() {
+        when(issueService.getIssueIdFromName(anyString())).thenReturn(Optional.of(ISSUE_ID));
+        when(userService.findUserIdByName(anyString())).thenReturn(Optional.of(USER_ID));
+        when(activityService.findActivityFromName(anyString())).thenReturn(ACTIVITY_ID);
     }
 }

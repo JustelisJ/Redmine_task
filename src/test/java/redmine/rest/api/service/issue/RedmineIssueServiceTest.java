@@ -1,56 +1,45 @@
 package redmine.rest.api.service.issue;
 
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.client.RestTemplate;
+import redmine.rest.api.config.RestTemplateConfig;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@Import(RestTemplateConfig.class)
 class RedmineIssueServiceTest {
 
     private static final String NP_1_ISSUE_NAME = "NP-1";
     private static final String NP_3_ISSUE_NAME = "NP-3";
+    private static final long ISSUE_ID = 2L;
 
-    @Mock
+    @Autowired
+    RestTemplate restTemplate;
+
     IssueService issueService;
-    Long issueId;
-
-    private void initializeMock() {
-        MockitoAnnotations.initMocks(this);
-    }
-
-    private void initializeData() {
-        issueId = 2L;
-    }
 
     @BeforeEach
     void setUp() {
-        initializeMock();
-        initializeData();
+        issueService = new RedmineIssueService(restTemplate);
     }
 
-    @SneakyThrows
     @Test
     void getIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
         Optional<Long> id = issueService.getIssueIdFromName(NP_1_ISSUE_NAME);
         assertTrue(id.isPresent());
-        assertEquals(issueId, id.get());
+        assertEquals(ISSUE_ID, id.get());
     }
 
-    @SneakyThrows
     @Test
     void dontGetIssueIdFromName() {
-        when(issueService.getIssueIdFromName(NP_1_ISSUE_NAME)).thenReturn(Optional.of(issueId));
-        when(issueService.getIssueIdFromName(NP_3_ISSUE_NAME)).thenReturn(Optional.empty());
         Optional<Long> id = issueService.getIssueIdFromName(NP_3_ISSUE_NAME);
         assertTrue(id.isEmpty());
     }

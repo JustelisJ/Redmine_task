@@ -14,37 +14,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Import(RestTemplateConfig.class)
 class RedmineActivityServiceTest {
 
+    private static final long DOCUMENTATION_ID = 4L;
     private static final String ACTIVITY_DOCUMENTATION_NAME = "Documentation";
     private static final String SOME_OTHER_ACTIVITY_NAME = "asdasd";
+    private static final long DEFAULT_ID = 5L;
 
     @Autowired
     RestTemplate restTemplate;
 
     ActivityService activityService;
-    Long documentationId;
-    Long default_id;
 
-    private void initializeData() {
-        documentationId = 4L;
-        default_id = 5L;
-    }
 
     @BeforeEach
     void setUp() {
         activityService = new RedmineActivityService(restTemplate);
-
-        initializeData();
     }
 
     @Test
     void findActivityFromName() {
         Long id = activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME);
-        assertEquals(documentationId, id);
+        assertEquals(DOCUMENTATION_ID, id);
     }
 
     @Test
     void dontFindActivityFromName() {
         Long id = activityService.findActivityFromName(SOME_OTHER_ACTIVITY_NAME);
-        assertEquals(default_id, id);
+        assertEquals(DEFAULT_ID, id);
     }
 }

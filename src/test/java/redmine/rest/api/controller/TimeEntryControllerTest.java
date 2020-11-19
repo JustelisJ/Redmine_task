@@ -38,8 +38,8 @@ class TimeEntryControllerTest {
     private static final String GET_ISSUES_URL = "/timeEntries";
     private static final String ISSUES_VIEW_NAME = "timeEntry/allTimeEntries";
     private static final String TIME_ENTRY_ATTRIBUTE_NAME = "timeEntries";
-    public static final String TIME_ENTRIES_NEW_URL = "/timeEntries/new";
-    public static final String REDIRECT_TIME_ENTRIES_URL = "redirect:/timeEntries";
+    private static final String TIME_ENTRIES_NEW_URL = "/timeEntries/new";
+    private static final String REDIRECT_TIME_ENTRIES_URL = "redirect:/timeEntries";
 
     @Mock
     TimeEntryService entryService;
