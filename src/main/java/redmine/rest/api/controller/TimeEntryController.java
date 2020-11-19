@@ -24,13 +24,12 @@ public class TimeEntryController {
     }
 
     @PostMapping("/timeEntries/new")
-    public String createTimeEntryFromJSON(Model model, @RequestBody JiraPackage jiraPackage) {
+    public String createTimeEntryFromJSON(@RequestBody JiraPackage jiraPackage) {
 
         //Saves the received JSON
         timeEntryService.postJiraWorkLogs(jiraPackage);
 
-        model.addAttribute("timeEntries", timeEntryService.getTimeEntries());
-        return "timeEntry/allTimeEntries";
+        return "redirect:/timeEntries";
     }
 
 }
