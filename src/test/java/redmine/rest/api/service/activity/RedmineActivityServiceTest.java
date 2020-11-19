@@ -2,28 +2,27 @@ package redmine.rest.api.service.activity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.client.RestTemplate;
+import redmine.rest.api.config.RestTemplateConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@Import(RestTemplateConfig.class)
 class RedmineActivityServiceTest {
 
     private static final String ACTIVITY_DOCUMENTATION_NAME = "Documentation";
     private static final String SOME_OTHER_ACTIVITY_NAME = "asdasd";
 
-    @Mock
+    @Autowired
+    RestTemplate restTemplate;
+
     ActivityService activityService;
     Long documentationId;
     Long default_id;
-
-    private void initializeMock() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     private void initializeData() {
         documentationId = 4L;
@@ -32,24 +31,19 @@ class RedmineActivityServiceTest {
 
     @BeforeEach
     void setUp() {
-        initializeMock();
+        activityService = new RedmineActivityService(restTemplate);
+
         initializeData();
     }
 
     @Test
     void findActivityFromName() {
-        when(activityService.findActivityFromName(any())).thenReturn(default_id);
-        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(documentationId);
-
         Long id = activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME);
         assertEquals(documentationId, id);
     }
 
     @Test
     void dontFindActivityFromName() {
-        when(activityService.findActivityFromName(any())).thenReturn(default_id);
-        when(activityService.findActivityFromName(ACTIVITY_DOCUMENTATION_NAME)).thenReturn(documentationId);
-
         Long id = activityService.findActivityFromName(SOME_OTHER_ACTIVITY_NAME);
         assertEquals(default_id, id);
     }

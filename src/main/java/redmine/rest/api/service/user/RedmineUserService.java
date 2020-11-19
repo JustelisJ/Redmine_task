@@ -1,7 +1,6 @@
 package redmine.rest.api.service.user;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,10 +22,9 @@ public class RedmineUserService implements UserService {
     private final RestTemplate restTemplate;
     private Map<String, Long> users;
 
-    public RedmineUserService(RestTemplate restTemplate,
-                              @Value("${redmine.url}") String url) {
+    public RedmineUserService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.url = url + "/users.json";
+        this.url = "/users.json";
         users = new HashMap<>();
 
         //temp---

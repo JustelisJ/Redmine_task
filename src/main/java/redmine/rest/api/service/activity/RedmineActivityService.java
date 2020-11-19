@@ -1,7 +1,6 @@
 package redmine.rest.api.service.activity;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,10 +21,9 @@ public class RedmineActivityService implements ActivityService {
     private final RestTemplate restTemplate;
     private Map<String, Long> activities;
 
-    public RedmineActivityService(RestTemplate restTemplate,
-                                  @Value("${redmine.url}") String url) {
+    public RedmineActivityService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.url = url + "/enumerations/time_entry_activities.json";
+        this.url = "/enumerations/time_entry_activities.json";
         activities = new HashMap<>();
         mapAllActivities();
     }

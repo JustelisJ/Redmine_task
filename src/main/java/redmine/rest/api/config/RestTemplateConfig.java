@@ -16,8 +16,11 @@ public class RestTemplateConfig {
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
                                      @Value("${redmine.logger.username}") String username,
                                      @Value("${redmine.logger.password}") String password,
+                                     @Value("${redmine.url}") String url,
                                      ObjectMapper mapper) {
-        RestTemplate template = restTemplateBuilder.build();
+        RestTemplate template = restTemplateBuilder
+                .rootUri(url)
+                .build();
         template.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         template.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter(mapper));
         return template;

@@ -3,8 +3,7 @@ package redmine.rest.api.service.timeentry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import redmine.rest.api.model.Activity;
@@ -32,15 +31,12 @@ class RedmineTimeEntryServiceTest {
     private static final String TIME_ENTRY_COMMENT = "hehe";
     private static final int TIME_ENTRY_DATA_SIZE = 2;
 
-    @Mock
+    @InjectMocks
     TimeEntryService entryService;
+
     TimeEntryData data;
     TimeEntry responseData;
     ArrayList<TimeEntry> responseData2;
-
-    private void initializeMock() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     private void initializeData() {
         responseData = TimeEntry.builder()
@@ -61,13 +57,11 @@ class RedmineTimeEntryServiceTest {
 
     @BeforeEach
     void setUp() {
-        initializeMock();
         initializeData();
     }
 
     @Test
     void getTimeEntries() {
-        when(entryService.getTimeEntries()).thenReturn(data);
         TimeEntryData returnedData = entryService.getTimeEntries();
 
         assertEquals(TIME_ENTRY_DATA_SIZE, returnedData.getTimeEntries().size());

@@ -1,7 +1,6 @@
 package redmine.rest.api.service.issue;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,10 +22,9 @@ public class RedmineIssueService implements IssueService {
     private final RestTemplate restTemplate;
     private Map<String, Long> issues;
 
-    public RedmineIssueService(RestTemplate restTemplate,
-                               @Value("${redmine.url}") String url) {
+    public RedmineIssueService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.url = url + "/issues.json";
+        this.url = "/issues.json";
         issues = new HashMap<>();
         mapAllIssues();
     }

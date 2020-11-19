@@ -1,7 +1,6 @@
 package redmine.rest.api.service.timeentry;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.exception.IssueNotFoundException;
@@ -38,7 +37,6 @@ public class RedmineTimeEntryService implements TimeEntryService {
 
 
     public RedmineTimeEntryService(RestTemplate restTemplate,
-                                   @Value("${redmine.url}") String url,
                                    IssueService issueService,
                                    UserService userService,
                                    ActivityService activityService) {
@@ -46,7 +44,7 @@ public class RedmineTimeEntryService implements TimeEntryService {
         this.issueService = issueService;
         this.userService = userService;
         this.activityService = activityService;
-        this.url = url + "/time_entries.json";
+        this.url = "/time_entries.json";
         writter = new FailedPostWriterToFile();
     }
 
