@@ -1,4 +1,4 @@
-package redmine.rest.api.service.user;
+package redmine.rest.api.unit_tests.service.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 import redmine.rest.api.config.RestTemplateConfig;
+import redmine.rest.api.service.user.RedmineUserService;
+import redmine.rest.api.service.user.UserService;
 
 import java.util.Optional;
 

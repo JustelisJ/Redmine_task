@@ -1,4 +1,4 @@
-package redmine.rest.api.service.timeentry;
+package redmine.rest.api.unit_tests.service.timeentry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import redmine.rest.api.model.jira.JiraWorkLog;
 import redmine.rest.api.model.redminedata.TimeEntryData;
 import redmine.rest.api.service.activity.ActivityService;
 import redmine.rest.api.service.issue.IssueService;
+import redmine.rest.api.service.timeentry.RedmineTimeEntryService;
+import redmine.rest.api.service.timeentry.TimeEntryService;
 import redmine.rest.api.service.user.UserService;
 
 import java.util.HashSet;
